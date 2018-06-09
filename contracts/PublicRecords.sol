@@ -111,7 +111,7 @@ contract PublicRecords {
     struct UndergraduateRecord {
         uint256 timestamp;
         bytes32 upi;
-        bytes32 name;
+        bytes32 programme;
         bytes32 grade;
         bytes32 date;
         bytes32 institution;
@@ -120,7 +120,7 @@ contract PublicRecords {
     event AddedUndergraduateRecord(
         uint256 timestamp,
         bytes32 upi,
-        bytes32 name,
+        bytes32 programme,
         bytes32 grade,
         bytes32 date,
         bytes32 institution
@@ -341,14 +341,14 @@ contract PublicRecords {
     //add an Undergraduate record
     function addUndergraduateRecord(
         bytes32 upi,
-        bytes32 name,
+        bytes32 programme,
         bytes32 grade,
         bytes32 date,
         bytes32 institution
     ) public {
         require(!isUndergraduateRecordExists(upi)) ;
-        undergraduateRecords[upi] = UndergraduateRecord(now, upi, name, grade, date, institution);
-        emit AddedUndergraduateRecord(now, upi, name, grade, date, institution);
+        undergraduateRecords[upi] = UndergraduateRecord(now, upi, programme, grade, date, institution);
+        emit AddedUndergraduateRecord(now, upi, programme, grade, date, institution);
     }
     //get an Undergraduate record
     function getUndergroundRecord(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32){
@@ -356,7 +356,7 @@ contract PublicRecords {
         return (
         undergraduateRecords[upi].timestamp,
         undergraduateRecords[upi].upi,
-        undergraduateRecords[upi].name,
+        undergraduateRecords[upi].programme,
         undergraduateRecords[upi].grade,
         undergraduateRecords[upi].date,
         undergraduateRecords[upi].institution);
