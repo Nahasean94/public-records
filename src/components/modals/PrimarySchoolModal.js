@@ -5,7 +5,7 @@ import {isEmpty} from 'lodash'
 import TextFieldGroup from '../shared/TextFieldsGroup'
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap'
 import {connect} from 'react-redux'
-import PublicRecords from '../../build/contracts/PublicRecords.json'
+import PublicRecords from '../../../build/contracts/PublicRecords.json'
 import getWeb3 from '../../utils/getWeb3'
 
 const contract = require('truffle-contract')
@@ -34,7 +34,6 @@ class PrimarySchoolModal extends React.Component {
 
     componentWillMount() {
         // Get network provider and web3 instance.
-        // See utils/getWeb3 for more info.
 
         getWeb3
             .then(results => {

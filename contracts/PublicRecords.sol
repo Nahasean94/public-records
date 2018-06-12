@@ -136,7 +136,7 @@ contract PublicRecords {
         bytes32 upi,
         bytes32 category
     ) public {
-        require(!isInstitutionExists(upi)) ;
+//        require(!isInstitutionExists(upi)) ;
         institutions[upi] = Institution(now, name, dateFounded, county, upi, category);
         emit AddedInstitution(now, name, dateFounded, county, upi, category);
     }
@@ -160,7 +160,7 @@ contract PublicRecords {
         return true;
     }
     //add an ECDE Record
-    function addECDECRecord(
+    function addECDERecord(
         bytes32 upi,
         uint english,
         uint kiswahili,
