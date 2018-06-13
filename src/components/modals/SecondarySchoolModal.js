@@ -119,9 +119,10 @@ class SecondarySchoolModal extends React.Component {
             this.state.web3.eth.getCoinbase((error, coinbase) => {
                 publicRecords.deployed().then((instance) => {
                     publicRecordsInstance = instance
-                    return publicRecordsInstance.addSecondarySchoolInfo(upi, english, kiswahili, math, biology, chemistry, physics, history, geography, religion, business, date, institution, {from: coinbase})
+                    return publicRecordsInstance.addSecondarySchoolRecord(upi, english, kiswahili, math, biology, chemistry, physics, history, geography, religion, business, date, institution, {from: coinbase})
                 }).then((result) => {
                     console.log(result)
+                    this.props.onClose()
                     this.setState({todo: ''})
                 })
             })

@@ -136,6 +136,7 @@ class PrimarySchoolModal extends React.Component {
                     return publicRecordsInstance.addPrimarySchoolRecord(upi, english, kiswahili, math,science, socialStudies, date, institution, {from: coinbase})
                 }).then((result) => {
                     console.log(result)
+                    this.props.onClose()
                     this.setState({todo: ''})
                 })
             })

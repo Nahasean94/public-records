@@ -123,6 +123,7 @@ class InstitutionModal extends React.Component {
                     return publicRecordsInstance.addInstitution(name, dateFounded, county, upi, category, {from: coinbase})
                 }).then((result) => {
                     console.log(result)
+                    this.props.onClose()
                     this.setState({todo: ''})
 
                 })

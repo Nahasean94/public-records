@@ -9,6 +9,7 @@ contract PublicRecords {
         bytes32 county;
         bytes32 upi;
         bytes32 category;
+        bool exists;
     }
 
     event AddedInstitution(
@@ -30,6 +31,7 @@ contract PublicRecords {
         bytes32 date;
         bytes32 institution;
         bool repeater;
+        bool exists;
 
     }
 
@@ -40,8 +42,9 @@ contract PublicRecords {
         uint kiswahili,
         uint math,
         bytes32 date,
-        bytes32 institution);
-
+        bytes32 institution
+    );
+    //
     mapping(bytes32 => ECDERecord) ecdeRecords;
 
     struct PrimarySchoolRecord {
@@ -55,6 +58,7 @@ contract PublicRecords {
         bytes32 date;
         bytes32 institution;
         bool repeater;
+        bool exists;
     }
 
     event AddedPrimarySchoolRecord(
@@ -87,6 +91,7 @@ contract PublicRecords {
         bytes32 date;
         bytes32 institution;
         bool repeater;
+        bool exists;
     }
 
     event AddedSecondarySchoolRecord(
@@ -115,6 +120,7 @@ contract PublicRecords {
         bytes32 grade;
         bytes32 date;
         bytes32 institution;
+        bool exists;
     }
 
     event AddedUndergraduateRecord(
@@ -136,13 +142,14 @@ contract PublicRecords {
         bytes32 upi,
         bytes32 category
     ) public {
-//        require(!isInstitutionExists(upi)) ;
-        institutions[upi] = Institution(now, name, dateFounded, county, upi, category);
+        require(!isInstitutionExists(upi));
+        institutions[upi] = Institution(now, name, dateFounded, county, upi, category, true);
         emit AddedInstitution(now, name, dateFounded, county, upi, category);
+
     }
     //get an institution
     function getInstitution(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32){
-        require (isInstitutionExists(upi));
+        require(isInstitutionExists(upi));
         return (
         institutions[upi].timestamp,
         institutions[upi].name,
@@ -154,10 +161,10 @@ contract PublicRecords {
     }
     //is institution exist
     function isInstitutionExists(bytes32 upi) private constant returns (bool){
-        if (institutions[upi].upi.length == 0) {
-            return false;
+        if (institutions[upi].exists) {
+            return true;
         }
-        return true;
+        return false;
     }
     //add an ECDE Record
     function addECDERecord(
@@ -168,14 +175,15 @@ contract PublicRecords {
         bytes32 date,
         bytes32 institution
     ) public {
-        require(!isECDERecordExists(upi)) ;
-        ecdeRecords[upi] = ECDERecord(now, upi, english, kiswahili, math, date, institution, false);
+        require(!isECDERecordExists(upi));
+        ecdeRecords[upi] = ECDERecord(now, upi, english, kiswahili, math, date, institution, false, true);
         emit AddedECDERecord(now, upi, english, kiswahili, math, date, institution);
     }
 
+
     //get an ECDE Record
     function getECDERecord(bytes32 upi) public constant returns (uint, bytes32, uint, uint, uint, bytes32, bytes32){
-        require (isECDERecordExists(upi));
+        require(isECDERecordExists(upi));
         return (
         ecdeRecords[upi].timestamp,
         ecdeRecords[upi].upi,
@@ -188,10 +196,10 @@ contract PublicRecords {
     }
     //is ECDE record exist
     function isECDERecordExists(bytes32 upi) private constant returns (bool){
-        if (ecdeRecords[upi].upi.length == 0) {
-            return false;
+        if (ecdeRecords[upi].exists) {
+            return true;
         }
-        return true;
+        return false;
     }
     //add a Primary School Record
     function addPrimarySchoolRecord(
@@ -205,14 +213,14 @@ contract PublicRecords {
         bytes32 institution
 
     ) public {
-        require(!isPrimarySchoolRecordExists(upi)) ;
-        primarySchoolRecords[upi] = PrimarySchoolRecord(now, upi, english, kiswahili, math, science, socialStudies, date, institution, false);
+        require(!isPrimarySchoolRecordExists(upi));
+        primarySchoolRecords[upi] = PrimarySchoolRecord(now, upi, english, kiswahili, math, science, socialStudies, date, institution, false, true);
         emit AddedPrimarySchoolRecord(now, upi, english, kiswahili, math, science, socialStudies, date, institution);
     }
 
     //get a Primary School Record
     function getPrimarySchoolInfo(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32){
-        require (isPrimarySchoolRecordExists(upi));
+        require(isPrimarySchoolRecordExists(upi));
         return (
         primarySchoolRecords[upi].timestamp,
         primarySchoolRecords[upi].upi,
@@ -222,7 +230,7 @@ contract PublicRecords {
     }
     //get primary school subjects
     function getPrimarySchoolSubjects(bytes32 upi) public constant returns (uint, uint, uint, uint, uint){
-        require (isPrimarySchoolRecordExists(upi));
+        require(isPrimarySchoolRecordExists(upi));
         return (
         primarySchoolRecords[upi].english,
         primarySchoolRecords[upi].kiswahili,
@@ -234,10 +242,10 @@ contract PublicRecords {
     }
     //is Primary school record exist
     function isPrimarySchoolRecordExists(bytes32 upi) private constant returns (bool){
-        if (primarySchoolRecords[upi].upi.length == 0) {
-            return false;
+        if (primarySchoolRecords[upi].exists) {
+            return true;
         }
-        return true;
+        return false;
     }
     //add Secondary school
     function addSecondarySchoolRecord(
@@ -255,7 +263,7 @@ contract PublicRecords {
         bytes32 date,
         bytes32 institution
     ) public {
-        require(!isSecondarySchoolRecordExists(upi)) ;
+        require(!isSecondarySchoolRecordExists(upi));
         secondarySchools[upi] = SecondarySchoolRecord(
             now,
             upi,
@@ -271,7 +279,8 @@ contract PublicRecords {
             business,
             date,
             institution,
-            false
+            false,
+            true
         );
         emit AddedSecondarySchoolRecord(
             now,
@@ -293,7 +302,7 @@ contract PublicRecords {
 
     //get SecondarySchoolInfo
     function getSecondarySchoolInfo(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32){
-        require (isSecondarySchoolRecordExists(upi));
+        require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].timestamp,
         secondarySchools[upi].upi,
@@ -302,7 +311,7 @@ contract PublicRecords {
     }
     //get Humanities
     function getHumanitites(bytes32 upi) public constant returns (uint, uint, uint){
-        require (isSecondarySchoolRecordExists(upi));
+        require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].history,
         secondarySchools[upi].religion,
@@ -310,7 +319,7 @@ contract PublicRecords {
     }
     //get Core subjects
     function getCoreSubjects(bytes32 upi) public constant returns (uint, uint, uint){
-        require (isSecondarySchoolRecordExists(upi));
+        require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].english,
         secondarySchools[upi].kiswahili,
@@ -318,7 +327,7 @@ contract PublicRecords {
     }
     //get sciences
     function getSciences(bytes32 upi) public constant returns (uint, uint, uint){
-        require (isSecondarySchoolRecordExists(upi));
+        require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].biology,
         secondarySchools[upi].chemistry,
@@ -326,17 +335,17 @@ contract PublicRecords {
     }
     //get electives
     function getElectives(bytes32 upi) public constant returns (uint){
-        require (isSecondarySchoolRecordExists(upi));
+        require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].business);
     }
 
     //is Secondary schoool record exist
     function isSecondarySchoolRecordExists(bytes32 upi) private constant returns (bool){
-        if (secondarySchools[upi].upi.length == 0) {
-            return false;
+        if (secondarySchools[upi].exists) {
+            return true;
         }
-        return true;
+        return false;
     }
     //add an Undergraduate record
     function addUndergraduateRecord(
@@ -346,13 +355,13 @@ contract PublicRecords {
         bytes32 date,
         bytes32 institution
     ) public {
-        require(!isUndergraduateRecordExists(upi)) ;
-        undergraduateRecords[upi] = UndergraduateRecord(now, upi, programme, grade, date, institution);
+        require(!isUndergraduateRecordExists(upi));
+        undergraduateRecords[upi] = UndergraduateRecord(now, upi, programme, grade, date, institution, true);
         emit AddedUndergraduateRecord(now, upi, programme, grade, date, institution);
     }
     //get an Undergraduate record
-    function getUndergroundRecord(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32){
-        require (isUndergraduateRecordExists(upi));
+    function getUndergraduateRecord(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32){
+        require(isUndergraduateRecordExists(upi));
         return (
         undergraduateRecords[upi].timestamp,
         undergraduateRecords[upi].upi,
@@ -364,10 +373,10 @@ contract PublicRecords {
     }
     //is Undergraduate record exist
     function isUndergraduateRecordExists(bytes32 upi) private constant returns (bool){
-        if (undergraduateRecords[upi].upi.length == 0) {
-            return false;
+        if (undergraduateRecords[upi].exists) {
+            return true;
         }
-        return true;
+        return false;
     }
 
 

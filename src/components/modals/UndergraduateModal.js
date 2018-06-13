@@ -101,6 +101,7 @@ class UndergraduateModal extends React.Component {
                     return publicRecordsInstance.addUndergraduateRecord(upi, programme, grade, date, institution, {from: coinbase})
                 }).then((result) => {
                     console.log(result)
+                    this.props.onClose()
                     this.setState({todo: ''})
 
                 })
@@ -143,7 +144,7 @@ class UndergraduateModal extends React.Component {
                             />
                             <TextFieldGroup
                                 label="Grade"
-                                type="number"
+                                type="text"
                                 name="grade"
                                 value={grade}
                                 onChange={this.onChange}
