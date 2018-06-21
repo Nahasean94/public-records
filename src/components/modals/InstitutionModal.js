@@ -129,22 +129,6 @@ class InstitutionModal extends React.Component {
                 })
             })
 
-            // this.props.registerSchool({
-            //     name: this.state.name,
-            //     category: this.state.category,
-            //     county: this.state.county
-            // }).then(
-            //     (school) => {
-            //         this.props.addFlashMessage({
-            //             type: 'success',
-            //             text: 'You have signed up successfully. Please use the login in form below to access your account'
-            //         })
-            //         this.props.onClose()
-            //         this.props.addSchool(school.data)
-            //         this.setState({name: '', category: '', isLoading: false})
-            //     },
-            //     err => this.setState({errors: err.response.data, isLoading: false})
-            // )
         }
     }
 
@@ -166,7 +150,7 @@ class InstitutionModal extends React.Component {
                                 label="Name"
                                 type="text"
                                 name="name"
-                                value={name}
+                                // value={name}
                                 onChange={this.onChange}
                                 errors={errors.name}
                                 // checkUserExists={this.checkSchoolExists}
@@ -176,7 +160,7 @@ class InstitutionModal extends React.Component {
                                 label="Date founded"
                                 type="date"
                                 name="dateFounded"
-                                value={dateFounded}
+                                // value={dateFounded}
                                 onChange={this.onChange}
                                 errors={errors.dateFounded}
                             />
@@ -184,7 +168,7 @@ class InstitutionModal extends React.Component {
                                 label="Upi"
                                 type="text"
                                 name="upi"
-                                value={upi}
+                                // value={upi}
                                 onChange={this.onChange}
                                 errors={errors.upi}
                             />

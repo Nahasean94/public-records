@@ -25,9 +25,9 @@ contract PublicRecords {
     struct ECDERecord {
         uint256 timestamp;
         bytes32 upi;
-        uint english;
-        uint kiswahili;
-        uint math;
+        uint256 english;
+        uint256 kiswahili;
+        uint256 math;
         bytes32 date;
         bytes32 institution;
         bool repeater;
@@ -38,9 +38,9 @@ contract PublicRecords {
     event AddedECDERecord(
         uint256 timestamp,
         bytes32 upi,
-        uint english,
-        uint kiswahili,
-        uint math,
+        uint256 english,
+        uint256 kiswahili,
+        uint256 math,
         bytes32 date,
         bytes32 institution
     );
@@ -50,11 +50,11 @@ contract PublicRecords {
     struct PrimarySchoolRecord {
         uint256 timestamp;
         bytes32 upi;
-        uint english;
-        uint kiswahili;
-        uint math;
-        uint science;
-        uint socialStudies;
+        uint256 english;
+        uint256 kiswahili;
+        uint256 math;
+        uint256 science;
+        uint256 socialStudies;
         bytes32 date;
         bytes32 institution;
         bool repeater;
@@ -64,11 +64,11 @@ contract PublicRecords {
     event AddedPrimarySchoolRecord(
         uint256 timestamp,
         bytes32 upi,
-        uint english,
-        uint kiswahili,
-        uint math,
-        uint science,
-        uint socialStudies,
+        uint256 english,
+        uint256 kiswahili,
+        uint256 math,
+        uint256 science,
+        uint256 socialStudies,
         bytes32 date,
         bytes32 institution
     );
@@ -78,16 +78,16 @@ contract PublicRecords {
     struct SecondarySchoolRecord {
         uint256 timestamp;
         bytes32 upi;
-        uint english;
-        uint kiswahili;
-        uint math;
-        uint biology;
-        uint chemistry;
-        uint physics;
-        uint history;
-        uint geography;
-        uint religion;
-        uint business;
+        uint256 english;
+        uint256 kiswahili;
+        uint256 math;
+        uint256 biology;
+        uint256 chemistry;
+        uint256 physics;
+        uint256 history;
+        uint256 geography;
+        uint256 religion;
+        uint256 business;
         bytes32 date;
         bytes32 institution;
         bool repeater;
@@ -97,16 +97,16 @@ contract PublicRecords {
     event AddedSecondarySchoolRecord(
         uint256 timestamp,
         bytes32 upi,
-        uint english,
-        uint kiswahili,
-        uint math,
-        uint biology,
-        uint chemistry,
-        uint physics,
-        uint history,
-        uint geography,
-        uint religion,
-        uint business,
+        uint256 english,
+        uint256 kiswahili,
+        uint256 math,
+        uint256 biology,
+        uint256 chemistry,
+        uint256 physics,
+        uint256 history,
+        uint256 geography,
+        uint256 religion,
+        uint256 business,
         bytes32 date,
         bytes32 institution
     );
@@ -148,7 +148,7 @@ contract PublicRecords {
 
     }
     //get an institution
-    function getInstitution(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32){
+    function getInstitution(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32, bytes32, bytes32){
         require(isInstitutionExists(upi));
         return (
         institutions[upi].timestamp,
@@ -169,9 +169,9 @@ contract PublicRecords {
     //add an ECDE Record
     function addECDERecord(
         bytes32 upi,
-        uint english,
-        uint kiswahili,
-        uint math,
+        uint256 english,
+        uint256 kiswahili,
+        uint256 math,
         bytes32 date,
         bytes32 institution
     ) public {
@@ -182,7 +182,7 @@ contract PublicRecords {
 
 
     //get an ECDE Record
-    function getECDERecord(bytes32 upi) public constant returns (uint, bytes32, uint, uint, uint, bytes32, bytes32){
+    function getECDERecord(bytes32 upi) public constant returns (uint256, bytes32, uint256, uint256, uint256, bytes32, bytes32){
         require(isECDERecordExists(upi));
         return (
         ecdeRecords[upi].timestamp,
@@ -204,11 +204,11 @@ contract PublicRecords {
     //add a Primary School Record
     function addPrimarySchoolRecord(
         bytes32 upi,
-        uint english,
-        uint kiswahili,
-        uint math,
-        uint science,
-        uint socialStudies,
+        uint256 english,
+        uint256 kiswahili,
+        uint256 math,
+        uint256 science,
+        uint256 socialStudies,
         bytes32 date,
         bytes32 institution
 
@@ -219,7 +219,7 @@ contract PublicRecords {
     }
 
     //get a Primary School Record
-    function getPrimarySchoolInfo(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32){
+    function getPrimarySchoolInfo(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32){
         require(isPrimarySchoolRecordExists(upi));
         return (
         primarySchoolRecords[upi].timestamp,
@@ -229,7 +229,7 @@ contract PublicRecords {
 
     }
     //get primary school subjects
-    function getPrimarySchoolSubjects(bytes32 upi) public constant returns (uint, uint, uint, uint, uint){
+    function getPrimarySchoolSubjects(bytes32 upi) public constant returns (uint256, uint256, uint256, uint256, uint){
         require(isPrimarySchoolRecordExists(upi));
         return (
         primarySchoolRecords[upi].english,
@@ -250,16 +250,16 @@ contract PublicRecords {
     //add Secondary school
     function addSecondarySchoolRecord(
         bytes32 upi,
-        uint english,
-        uint kiswahili,
-        uint math,
-        uint biology,
-        uint chemistry,
-        uint physics,
-        uint history,
-        uint geography,
-        uint religion,
-        uint business,
+        uint256 english,
+        uint256 kiswahili,
+        uint256 math,
+        uint256 biology,
+        uint256 chemistry,
+        uint256 physics,
+        uint256 history,
+        uint256 geography,
+        uint256 religion,
+        uint256 business,
         bytes32 date,
         bytes32 institution
     ) public {
@@ -301,7 +301,7 @@ contract PublicRecords {
 
 
     //get SecondarySchoolInfo
-    function getSecondarySchoolInfo(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32){
+    function getSecondarySchoolInfo(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32){
         require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].timestamp,
@@ -310,7 +310,7 @@ contract PublicRecords {
         secondarySchools[upi].institution);
     }
     //get Humanities
-    function getHumanitites(bytes32 upi) public constant returns (uint, uint, uint){
+    function getHumanitites(bytes32 upi) public constant returns (uint256, uint256, uint){
         require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].history,
@@ -318,7 +318,7 @@ contract PublicRecords {
         secondarySchools[upi].geography);
     }
     //get Core subjects
-    function getCoreSubjects(bytes32 upi) public constant returns (uint, uint, uint){
+    function getCoreSubjects(bytes32 upi) public constant returns (uint256, uint256, uint){
         require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].english,
@@ -326,7 +326,7 @@ contract PublicRecords {
         secondarySchools[upi].math);
     }
     //get sciences
-    function getSciences(bytes32 upi) public constant returns (uint, uint, uint){
+    function getSciences(bytes32 upi) public constant returns (uint256, uint256, uint){
         require(isSecondarySchoolRecordExists(upi));
         return (
         secondarySchools[upi].biology,
@@ -360,7 +360,7 @@ contract PublicRecords {
         emit AddedUndergraduateRecord(now, upi, programme, grade, date, institution);
     }
     //get an Undergraduate record
-    function getUndergraduateRecord(bytes32 upi) public constant returns (uint, bytes32, bytes32, bytes32, bytes32, bytes32){
+    function getUndergraduateRecord(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32, bytes32, bytes32){
         require(isUndergraduateRecordExists(upi));
         return (
         undergraduateRecords[upi].timestamp,
