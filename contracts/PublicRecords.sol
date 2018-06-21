@@ -1,13 +1,13 @@
 pragma solidity ^0.4.22;
 
 contract PublicRecords {
+    address public owner;
 
     struct Institution {
         uint256 timestamp;
         bytes32 name;
         bytes32 dateFounded;
         bytes32 county;
-        bytes32 upi;
         bytes32 category;
         bool exists;
     }
@@ -17,7 +17,6 @@ contract PublicRecords {
         bytes32 name,
         bytes32 dateFounded,
         bytes32 county,
-        bytes32 upi,
         bytes32 category);
 
     mapping(bytes32 => Institution) institutions;
@@ -134,6 +133,17 @@ contract PublicRecords {
 
     mapping(bytes32 => UndergraduateRecord) undergraduateRecords;
 
+    constructor() public {
+        if (msg.sender == owner) selfdestruct(owner);
+    }
+
+    function kill() public {
+        selfdestruct(owner);
+    }
+
+    function getAddress() public constant returns (address){
+        return msg.sender;
+    }
     //add an institution
     function addInstitution(
         bytes32 name,
@@ -143,20 +153,22 @@ contract PublicRecords {
         bytes32 category
     ) public {
         require(!isInstitutionExists(upi));
-        institutions[upi] = Institution(now, name, dateFounded, county, upi, category, true);
-        emit AddedInstitution(now, name, dateFounded, county, upi, category);
+
+        institutions[upi] = Institution(now, name, dateFounded, county, category, true);
+        emit AddedInstitution(now, name, dateFounded, county, category);
 
     }
     //get an institution
-    function getInstitution(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32, bytes32, bytes32){
+    function getInstitution(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32, bytes32){
         require(isInstitutionExists(upi));
+        //        Institution memory institution=institutions[upi];
         return (
         institutions[upi].timestamp,
         institutions[upi].name,
         institutions[upi].dateFounded,
         institutions[upi].county,
-        institutions[upi].upi,
-        institutions[upi].category);
+        institutions[upi].category
+        );
 
     }
     //is institution exist

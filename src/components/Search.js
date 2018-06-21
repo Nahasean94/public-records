@@ -56,8 +56,10 @@ class Search extends Component {
                 publicRecordsInstance = instance
                 return publicRecordsInstance.getInstitution(upi, {from: coinbase})
             }).then((result) => {
-
-                console.log(result)
+                console.log(this.state.web3.utils.toAscii(result[1]))
+                console.log(this.state.web3.utils.toAscii(result[2]))
+                console.log(this.state.web3.utils.toAscii(result[3]))
+                console.log(this.state.web3.utils.toAscii(result[4]))
             })
         })
     }
