@@ -253,7 +253,7 @@ class SecondarySchoolModal extends React.Component {
 
 
                             <div className="form-group row">
-                                <label className="col-sm-3 col-form-label" htmlFor="county"></label>
+                                <label className="col-sm-3 col-form-label" htmlFor=""></label>
                                 <div className="col-sm-9">
                                     <button disabled={isLoading || invalid}
                                             className="form-control btn btn-primary btn-sm"
