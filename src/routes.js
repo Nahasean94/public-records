@@ -12,9 +12,10 @@ export default () => {
             <div>
                 <App>
                     <Switch>
-                        <Route exact path="/" component={Home}/>
+                        <Route exact path="/" component={Search}/>
                         <Route exact path="/add" component={Add}/>
                         <Route exact path="/search" component={Search}/>
+                        <Route exact path="/dashboard" component={Search}/>
                     </Switch>
                 </App>
 

@@ -130,15 +130,8 @@ class Search extends Component {
         const {institutionResult, web3, studentResult} = this.state
         return (
             <div className="container">
-                <h1>PUBLIC RECORDS</h1>
-                {/*<ul className="list-inline">*/}
-                    {/*<li className="list-inline-item"><Link to="/">Home</Link></li>*/}
-                    {/*<li className="list-inline-item"><Link to="/add">Add</Link></li>*/}
-
-                {/*</ul>*/}
-                <hr/>
-                <form onSubmit={this.onSubmit}>
-                    <div className="input-group">
+                <form onSubmit={this.onSubmit} >
+                    <div className="input-group well">
                         <input type="text" className="form-control form-control-sm"
                                placeholder="Search"
                                aria-label="Search" aria-describedby="basic-addon1"
@@ -180,7 +173,7 @@ class Search extends Component {
                         </div>
                     </fieldset>
                     <div className="form-group  ">
-                        <input className="form-control btn btn-primary btn-sm col-sm-2" type="submit" value="Search"/>
+                        <input className="form-control btn btn-info btn-sm col-sm-2" type="submit" value="Search"/>
                     </div>
                 </form>
                 <div className="row">
