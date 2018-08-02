@@ -4,6 +4,7 @@ import ECDEModal from './modals/ECDEModal'
 import PrimarySchoolModal from './modals/PrimarySchoolModal'
 import SecondarySchoolModal from './modals/SecondarySchoolModal'
 import UndergraduateModal from './modals/UndergraduateModal'
+import Link from "react-router-dom/es/Link"
 
 
 class Add extends Component {
@@ -81,6 +82,11 @@ class Add extends Component {
         return (
             <div className="container">
                 <h1>PUBLIC RECORDS</h1>
+                {/*<ul className="list-inline">*/}
+                    {/*<li className="list-inline-item"><Link to="/">Home</Link></li>*/}
+                    {/*<li className="list-inline-item"><Link to="/search">Search</Link></li>*/}
+                {/*</ul>*/}
+                <hr/>
                 <div className="row">
                     <ul className="list-unstyled">
                         <li>

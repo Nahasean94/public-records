@@ -159,7 +159,7 @@ contract PublicRecords {
 
     }
     //get an institution
-    function getInstitution(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32, bytes32){
+    function getInstitution(bytes32 upi) public constant returns (uint256, bytes32, bytes32, bytes32, bytes32,bytes32){
         require(isInstitutionExists(upi));
         //        Institution memory institution=institutions[upi];
         return (
@@ -167,7 +167,8 @@ contract PublicRecords {
         institutions[upi].name,
         institutions[upi].dateFounded,
         institutions[upi].county,
-        institutions[upi].category
+        institutions[upi].category,
+        upi
         );
 
     }

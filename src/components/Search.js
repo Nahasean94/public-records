@@ -1,9 +1,10 @@
 import React, {Component} from 'react'
 import InstitutionResults from "./search_results/InstitutionResults"
 import SecondarySchoolResults from "./search_results/SecondarySchoolResults"
-import UndergraduateResults from "./search_results/UndergraduateResults"
-import PublicRecords from '../../build/contracts/PublicRecords.json'
+import PublicRecords from '../blockchain/build/contracts/PublicRecords.json'
 import getWeb3 from '../utils/getWeb3'
+import promisesAll from 'promise-all'
+import Link from "react-router-dom/es/Link"
 
 const contract = require('truffle-contract')
 
@@ -13,7 +14,9 @@ class Search extends Component {
         this.state = {
             search: '',
             searchType: '',
-            web3: null
+            web3: null,
+            institutionResult: [],
+            studentResult: [],
         }
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
@@ -39,6 +42,33 @@ class Search extends Component {
 
     searchStudent(upi) {
 
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
+
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            let results = []
+            publicRecords.deployed().then(async (instance) => {
+                publicRecordsInstance = instance
+                return await promisesAll(
+                    await publicRecordsInstance.getSecondarySchoolInfo(upi, {from: coinbase}).then(result => results = [...result]),
+                    await publicRecordsInstance.getHumanitites(upi, {from: coinbase}).then(result => results = [...results, ...result]),
+                    await publicRecordsInstance.getCoreSubjects(upi, {from: coinbase}).then(result => results = [...results, ...result]),
+                    await publicRecordsInstance.getSciences(upi, {from: coinbase}).then(result => results = [...results, ...result]),
+                    await publicRecordsInstance.getElectives(upi, {from: coinbase}).then(result => results = [...results, ...result]))
+
+
+                // return await promisesAll(await publicRecordsInstance.getPrimarySchoolInfo(upi, {from: coinbase}).then(result=>results=[...result]),await publicRecordsInstance.getPrimarySchoolSubjects(upi, {from: coinbase}).then(result=>results=[...results,...result] ))
+            }).then(() => {
+                console.log(results)
+                this.setState({studentResult: results})
+            })
+
+        })
     }
 
     searchInstitution(upi) {
@@ -56,10 +86,8 @@ class Search extends Component {
                 publicRecordsInstance = instance
                 return publicRecordsInstance.getInstitution(upi, {from: coinbase})
             }).then((result) => {
-                console.log(this.state.web3.utils.toAscii(result[1]))
-                console.log(this.state.web3.utils.toAscii(result[2]))
-                console.log(this.state.web3.utils.toAscii(result[3]))
-                console.log(this.state.web3.utils.toAscii(result[4]))
+
+                this.setState({institutionResult: result})
             })
         })
     }
@@ -99,9 +127,16 @@ class Search extends Component {
     }
 
     render() {
+        const {institutionResult, web3, studentResult} = this.state
         return (
             <div className="container">
                 <h1>PUBLIC RECORDS</h1>
+                {/*<ul className="list-inline">*/}
+                    {/*<li className="list-inline-item"><Link to="/">Home</Link></li>*/}
+                    {/*<li className="list-inline-item"><Link to="/add">Add</Link></li>*/}
+
+                {/*</ul>*/}
+                <hr/>
                 <form onSubmit={this.onSubmit}>
                     <div className="input-group">
                         <input type="text" className="form-control form-control-sm"
@@ -149,22 +184,26 @@ class Search extends Component {
                     </div>
                 </form>
                 <div className="row">
-                    <div className="col-sm-4 card">
-                        <InstitutionResults/>
-                    </div>
+                    {/*{institutionResult && institutionResult.length > 0 && <div className="col-sm-4 card">*/}
+                        {/*<InstitutionResults result={institutionResult} web3Instance={web3}/></div>}*/}
+
                     <div className="col-sm-1"></div>
+
+                    {/*{studentResult && studentResult.length>0 && <div className="col-sm-4 card"> <ECDEResults  result={studentResult} web3Instance={web3}/> </div>}*/}
+
+
+                    {/*{studentResult && studentResult.length>0&&  <div className="col-sm-4 card">*/}
+                    {/*<PrimarySchoolResults result={studentResult} web3Instance={web3}/>*/}
+                    {/*</div>}*/}
+                    {/*{studentResult && studentResult.length > 0 && <div className="col-sm-4 card">*/}
+                        {/*<SecondarySchoolResults result={studentResult} web3Instance={web3}/>*/}
+                    {/*</div>}*/}
                     {/*<div className="col-sm-4 card">*/}
-                    {/*<ECDEResults/>*/}
+                    {/*<SecondarySchoolResults/>*/}
                     {/*</div>*/}
                     {/*<div className="col-sm-4 card">*/}
-                    {/*<PrimarySchoolResults/>*/}
+                    {/*<UndergraduateResults/>*/}
                     {/*</div>*/}
-                    <div className="col-sm-4 card">
-                        <SecondarySchoolResults/>
-                    </div>
-                    <div className="col-sm-4 card">
-                        <UndergraduateResults/>
-                    </div>
                 </div>
             </div>
         )

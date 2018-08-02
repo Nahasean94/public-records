@@ -6,7 +6,7 @@ import TextFieldGroup from '../shared/TextFieldsGroup'
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap'
 import {connect} from 'react-redux'
 import classnames from "classnames"
-import PublicRecords from '../../../build/contracts/PublicRecords.json'
+import PublicRecords from '../../blockchain/build/contracts/PublicRecords.json'
 import getWeb3 from '../../utils/getWeb3'
 
 const contract = require('truffle-contract')
@@ -109,7 +109,7 @@ class InstitutionModal extends React.Component {
         e.preventDefault()
         if (this.isValid()) {
             const {name, dateFounded, county, upi, category} = this.state
-            this.setState({errors: {}, isLoading: true})
+            this.setState({errors: {}, isLoading: false})
             const publicRecords = contract(PublicRecords)
             publicRecords.setProvider(this.state.web3.currentProvider)
 
@@ -216,7 +216,7 @@ class InstitutionModal extends React.Component {
                             <div className="form-group row">
                                 <label className="col-sm-3 col-form-label" htmlFor="county"></label>
                                 <div className="col-sm-9">
-                                    <button disabled={isLoading || invalid}
+                                    <button
                                             className="form-control btn btn-primary btn-sm"
                                             type="submit">Save
                                     </button>

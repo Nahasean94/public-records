@@ -4,31 +4,31 @@ import React, {Component} from 'react'
 class InstitutionResults extends Component {
 
     render() {
-        return <table className="table table-sm table-hover table-borderless">
 
+        return <table className="table table-sm table-hover table-borderless">
             <tbody>
             <tr>
                 <th scope="row">Name</th>
-                <td> Moi University</td>
+                <td>{this.props.web3Instance.utils.toAscii(this.props.result[1]).toString()}</td>
             </tr>
             <tr>
                 <th scope="row">County</th>
-                <td>Uasin Gishu</td>
+                <td>{this.props.web3Instance.utils.toAscii(this.props.result[3])}</td>
 
             </tr>
             <tr>
                 <th scope="row">Date Founded</th>
-                <td>1984</td>
+                <td>{this.props.web3Instance.utils.toAscii(this.props.result[2])}</td>
 
             </tr>
             <tr>
                 <th scope="row">Category</th>
-                <td>Tertiary</td>
+                <td>{this.props.web3Instance.utils.toAscii(this.props.result[4])}</td>
 
             </tr>
             <tr>
                 <th scope="row">UPI</th>
-                <td>ASDF</td>
+                <td>{this.props.web3Instance.utils.toAscii(this.props.result[5])}</td>
             </tr>
             </tbody>
         </table>
