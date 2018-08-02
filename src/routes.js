@@ -1,10 +1,10 @@
 import React from 'react'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import App from "./App"
-import Home from './Home'
 import Add from "./components/Add"
 import Search from "./components/Search"
-
+import KnecDashboard from "./components/knec/KnecDashboard"
+import Nemis from './components/nemis/nemis'
 
 export default () => {
 
@@ -15,7 +15,9 @@ export default () => {
                         <Route exact path="/" component={Search}/>
                         <Route exact path="/add" component={Add}/>
                         <Route exact path="/search" component={Search}/>
-                        <Route exact path="/dashboard" component={Search}/>
+                        <Route exact path="/knec" component={KnecDashboard}/>
+                        <Route exact path="/nemis" component={Nemis}/>
+
                     </Switch>
                 </App>
 

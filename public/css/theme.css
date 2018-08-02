@@ -15,7 +15,7 @@ body{
 }
 
 .bd-sidebar {
-    border-right: 1px solid rgba(0, 0, 0, .1);
+    /*border-right: 1px solid rgba(0, 0, 0, .1);*/
     /*padding-bottom: 9999px;*/
     /*margin-bottom: -9999px;*/
     overflow: hidden;
@@ -96,7 +96,7 @@ body{
 }
 
 .nav-link {
-    color: #3498db;
+    color: #000;
 }
 
 .nav-item {
@@ -104,7 +104,7 @@ body{
 }
 
 .nav-link-custom, .navbar-brand {
-    color : #3498db;
+    color : #000;
 }
 .well {
     min-height: 20px;

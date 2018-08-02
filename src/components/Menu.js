@@ -19,9 +19,9 @@ export default ({router, active}) => {
     const onKnec = (e) => {
         e.preventDefault()
         router.history.push("/dashboard/knec")
+    }
 
-
-        return <Nav pills vertical className="bd-links" id="bd-docs-nav">
+        return (<Nav pills vertical className="bd-links" id="bd-docs-nav">
             <NavItem>
                 <NavLink href="" onClick={onKnec} active={active === 'knec'}>KNEC</NavLink>
             </NavItem>
@@ -32,9 +32,9 @@ export default ({router, active}) => {
                 <NavLink href="" onClick={onEcitizen} active={active === 'ecitizen'}>eCitizen</NavLink>
             </NavItem>
             <NavItem>
-                <NavLink href="" onClick={onTertiary} active={active === 'tertiary'}>Tertiary Institution</NavLink>
+                <NavLink href="" onClick={onTertiary} active={active === 'tertiary'}> Institution</NavLink>
             </NavItem>
-        </Nav>
+        </Nav>)
 
-    }
+
 }

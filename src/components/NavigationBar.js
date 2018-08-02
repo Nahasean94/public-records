@@ -4,20 +4,31 @@ import PropTypes from "prop-types"
 
 class NavigationBar extends React.Component {
     render() {
-
-        const userLinks = (<div className="navbar-nav flex-row ml-md-auto">
-            <Link to="/dashboard" className="nav-item nav-link-custom">Dashboard</Link>
-        </div>)
-
-        return(<nav className="navbar navbar-expand-sm bg-light">
-                    <Link className="navbar-brand" to="/">
-                        Public Records
-                    </Link>
-                    <div className="navbar-collapse" id="navbarNavAltMarkup">
-                        {userLinks}
+        return (<nav className="navbar navbar-expand-sm bg-light">
+                <Link className="nav-link navbar-brand" to="/">
+                    Home
+                </Link>
+                <div className="navbar-nav flex-row ml-md-auto">
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/knec">KNEC</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/ntsa">NTSA</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/ecitizen">eCitizen</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to="/institution">Institution</Link>
+                            </li>
+                        </ul>
                     </div>
+                </div>
 
-                </nav>
+
+            </nav>
         )
     }
 }
