@@ -1,8 +1,10 @@
 import React from 'react'
 import {isEmpty} from 'lodash'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {addKcseRecord} from "../../../shared/queries"
+import {addPrimarySchoolRecord, students} from "../../../shared/queries"
 import Select from 'react-select'
+import {Query} from 'graphql-react'
+import TextFieldGroup from "../../shared/TextFieldsGroup"
 
 let marksOptions = () => {
     let marks = []
@@ -14,26 +16,37 @@ let marksOptions = () => {
     }
     return marks
 }
+let upiOptions
 
 class KCPE extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            upi: '',
             math: '',
             english: '',
             kiswahili: '',
             science: '',
             social_studies: '',
+            year:'',
             message: ''
         }
-        this.onChange = this.onChange.bind(this)
+
+        this.onChangeMath=this.onChangeMath.bind(this)
+        this.onChangeScience=this.onChangeScience.bind(this)
+        this.onChangeKiswahili=this.onChangeKiswahili.bind(this)
+        this.onChangeEnglish=this.onChangeEnglish.bind(this)
+        this.onChangeSocialStudies=this.onChangeSocialStudies.bind(this)
+        this.onChangeUpi=this.onChangeUpi.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+        this.onChange = this.onChange.bind(this)
+
     }
 
 
     onSubmit(e) {
         e.preventDefault()
-        if (this.isValid()) {
+        // if (this.isValid()) {
             this.setState({errors: {}, isLoading: true})
             this.props.graphql
                 .query({
@@ -41,24 +54,28 @@ class KCPE extends React.Component {
                     resetOnLoad: true,
                     operation: {
                         variables: {
-                            math: this.state.math,
-                            english: this.state.english,
-                            kiswahili: this.state.kiswahili,
-                            science: this.state.science,
-                            social_studies: this.state.social_studies,
+                            upi: this.state.upi.value,
+                            math: this.state.math.value,
+                            english: this.state.english.value,
+                            kiswahili: this.state.kiswahili.value,
+                            science: this.state.science.value,
+                            social_studies: this.state.social_studies.value,
+                            year: this.state.year,
                         },
-                        query: addKcseRecord
+                        query: addPrimarySchoolRecord
                     }
                 })
                 .request.then(({data}) => {
                     if (data) {
                         this.setState({
+                            upi: '',
                             math: '',
                             english: '',
                             kiswahili: '',
                             chemistry: '',
                             science: '',
                             social_studies: '',
+                            year:'',
                             message: data
                                 ? `New KCPE record added.`
                                 : `An error occurred while adding record.`
@@ -66,34 +83,92 @@ class KCPE extends React.Component {
                     }
                 }
             )
-        }
+        // }
     }
 
+    onChangeMath(math) {
+        this.setState({math})
+    }
+
+    onChangeScience(science) {
+        this.setState({science})
+    }
+
+    onChangeKiswahili(kiswahili) {
+        this.setState({kiswahili})
+    }
+
+    onChangeEnglish(english) {
+        this.setState({english})
+    }
+
+    onChangeSocialStudies(social_studies) {
+        this.setState({social_studies})
+    }
+    onChangeUpi(upi) {
+        this.setState({upi})
+
+    }
     onChange(e) {
-        this.setState({[e.target.name]: e.target.value})
+        this.setState({[e.target.name]:e.target.value})
+
     }
 
     render() {
         const {loading, message} = this.state
         if (loading) {
-            return <p>Creating account…</p>
+            return <p>Adding record…</p>
         }
         if (message) {
             return <div className="alert alert-info">{message}</div>
         }
         return (
             <form onSubmit={this.onSubmit}>
+                <Query
+                    loadOnMount
+                    loadOnReset
+                    fetchOptionsOverride={fetchOptionsOverride}
+                    variables={{education: 'primary'}}
+                    query={students}
+                >
+                    {({loading, data}) => {
+                        if (data) {
+                            upiOptions = data.students.map(student => {
+                                return {
+                                    label: student.upi,
+                                    value: student.upi
+                                }
+                            })
+                            return <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Student UPI</label>
+                                <div className="col-sm-9 "><Select
+                                    closeOnSelect={true}
+                                    onChange={this.onChangeUpi}
+                                    options={upiOptions}
+                                    placeholder="Search Student UPI"
+                                    removeSelected={true}
+                                    value={this.state.upi}
+                                />
+                                </div>
+                            </div>
+                        }
+                        else if (loading) {
+                            return <p>Loading…</p>
+                        }
+                        return <p>Loading failed.</p>
+                    }
+                    }
+                </Query>
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">Math</label>
                     <div className="col-sm-9 ">
                         <Select
                             closeOnSelect={true}
-                            onChange={this.onChange}
+                            onChange={this.onChangeMath}
                             options={marksOptions()}
                             placeholder="Search Score"
                             removeSelected={true}
                             value={this.state.math}
-                            name="math"
                         />
                     </div>
                 </div>
@@ -102,12 +177,11 @@ class KCPE extends React.Component {
                     <div className="col-sm-9 ">
                         <Select
                             closeOnSelect={true}
-                            onChange={this.onChange}
+                            onChange={this.onChangeEnglish}
                             options={marksOptions()}
                             placeholder="Search Score"
                             removeSelected={true}
                             value={this.state.english}
-                            name="english"
                         />
                     </div>
                 </div>
@@ -116,12 +190,11 @@ class KCPE extends React.Component {
                     <div className="col-sm-9 ">
                         <Select
                             closeOnSelect={true}
-                            onChange={this.onChange}
+                            onChange={this.onChangeKiswahili}
                             options={marksOptions()}
                             placeholder="Search Score"
                             removeSelected={true}
                             value={this.state.kiswahili}
-                            name="kiswahili"
                         />
                     </div>
                 </div>
@@ -130,12 +203,11 @@ class KCPE extends React.Component {
                     <div className="col-sm-9 ">
                         <Select
                             closeOnSelect={true}
-                            onChange={this.onChange}
+                            onChange={this.onChangeScience}
                             options={marksOptions()}
                             placeholder="Search Score"
                             removeSelected={true}
                             value={this.state.science}
-                            name="science"
                         />
                     </div>
                 </div>
@@ -145,40 +217,33 @@ class KCPE extends React.Component {
                     <div className="col-sm-9 ">
                         <Select
                             closeOnSelect={true}
-                            onChange={this.onChange}
+                            onChange={this.onChangeSocialStudies}
                             options={marksOptions()}
                             placeholder="Search Score"
                             removeSelected={true}
-                            value={this.state.location}
-                            name="social_studies"
+                            value={this.state.social_studies}
                         />
                     </div>
                 </div>
-                <div className="form-group row">
-                    <label className="col-sm-3 col-form-label">Business</label>
-                    <div className="col-sm-9 ">
-                        <Select
-                            closeOnSelect={true}
-                            onChange={this.onChange}
-                            options={marksOptions()}
-                            placeholder="Search Score"
-                            removeSelected={true}
-                            value={this.state.business}
-                            name="business"
-                        />
-                    </div>
-                </div>
+                <TextFieldGroup
+                    label="Date"
+                    type="date"
+                    name="year"
+                    value={this.state.year}
+                    onChange={this.onChange}
+
+                />
                 <div className="form-group row">
                     <div className="col-sm-9 offset-3">
-                        <button disabled={this.state.isLoading || this.state.invalid}
+                        <button
                                 className="btn btn-dark btn-sm form-control "
-                                type="submit">Sign up
+                                type="submit">Save
                         </button>
                     </div>
                 </div>
             </form>
-                )
-                }
-                }
+        )
+    }
+}
 
-                export default KCPE
+export default KCPE

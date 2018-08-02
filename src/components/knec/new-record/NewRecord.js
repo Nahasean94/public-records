@@ -3,6 +3,8 @@ import {isEmpty} from 'lodash'
 // import {addLocation, isLocationExists} from "../../../shared/queries"
 import {Button, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap"
 import {Consumer} from 'graphql-react'
+import KCSE from "./KCSE"
+import KCPE from "./KCPE"
 
 
 class NewRecord extends React.Component {
@@ -10,40 +12,15 @@ class NewRecord extends React.Component {
         super(props)
         this.state = {
             exam: '',
-            upi: '',
         }
-        // this.onChange = this.onChange.bind(this)
+        this.onExamChange = this.onExamChange.bind(this)
         // this.onSubmit = this.onSubmit.bind(this)
         // this.checkLocationExists = this.checkLocationExists.bind(this)
     }
 
-    // checkLocationExists() {
-    //     this.props.graphql
-    //         .query({
-    //             fetchOptionsOverride: fetchOptionsOverride,
-    //             resetOnLoad: true,
-    //             operation: {
-    //                 variables: {
-    //                     name: this.state.name,
-    //                 },
-    //                 query: isLocationExists
-    //             }
-    //         })
-    //         .request.then(({data}) => {
-    //
-    //         if (data) {
-    //             if (data.isLocationExists.exists) {
-    //                 let errors = {}
-    //                 errors.name = 'A record with that name already exists'
-    //                 this.setState({errors, invalid: true,})
-    //             } else {
-    //                 let errors = {}
-    //                 this.setState({errors, invalid: false,})
-    //             }
-    //         }
-    //     })
-    //
-    // }
+onExamChange(e){
+        this.setState({exam:e.target.value})
+}
 
 
     render() {
@@ -67,11 +44,13 @@ class NewRecord extends React.Component {
                                 <select className="form-control form-control-sm" id="exam" name="exam"
                                         required="true" value={this.state.exam} onChange={this.onExamChange}>
                                     <option>Select</option>
-                                    <option value="male">KCPE</option>
-                                    <option value="female">KCSE</option>
+                                    <option value="kcpe">KCPE</option>
+                                    <option value="kcse">KCSE</option>
                                 </select>
                             </div>
                         </div>
+                        {this.state.exam==='kcse' && <Consumer>{graphql=><KCSE graphql={graphql}/>}</Consumer>}
+                        {this.state.exam==='kcpe' && <Consumer>{graphql=><KCPE graphql={graphql}/>}</Consumer>}
                     </ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={onClose}>Cancel</Button>{' '}
