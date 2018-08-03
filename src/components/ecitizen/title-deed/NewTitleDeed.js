@@ -1,19 +1,26 @@
 import React from 'react'
 import {isEmpty} from 'lodash'
-import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import TextFieldGroup from "../../shared/TextFieldsGroup"
+import Select from 'react-select'
 
-let marksOptions = () => {
-    let marks = []
-    for (let i = 0; i <= 100; i++) {
-        marks.push({
-            label: i,
-            value: i
-        })
-    }
-    return marks
+let districtOptions = [{
+    label: "Nakuru",
+    value: "Nakuru"
+}, {
+    label: "Kiambu",
+    value: "Kiambu"
+}, {
+    label: "Eldoret",
+    value: "Eldoret"
+}, {
+    label: "Kisumu",
+    value: "Kisumu"
+}, {
+    label: "Kitale",
+    value: "Kitale"
 }
-let upiOptions
+]
+
 
 class NewTitleDeed extends React.Component {
     constructor(props) {
@@ -27,52 +34,52 @@ class NewTitleDeed extends React.Component {
             district: '',
             date: '',
         }
-        this.onSubmit = this.onSubmit.bind(this)
+        // this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
 
     }
 
 
-    onSubmit(e) {
-        e.preventDefault()
-        // if (this.isValid()) {
-        this.setState({errors: {}, isLoading: true})
-        this.props.graphql
-            .query({
-                fetchOptionsOverride: fetchOptionsOverride,
-                resetOnLoad: true,
-                operation: {
-                    variables: {
-                        title_number: this.title_number.state,
-                        approximate_area: this.approximate_area.state,
-                        registry: this.registry.state,
-                        names: this.names.state,
-                        postal_address: this.postal_address.state,
-                        district: this.district.state,
-                        date: this.date.state,
-                    },
-                    query: addTitleDeed
-                }
-            })
-            .request.then(({data}) => {
-                if (data) {
-                    this.setState({
-                        title_number: '',
-                        approximate_area: '',
-                        registry: '',
-                        names: '',
-                        postal_address: '',
-                        district: '',
-                        date: '',
-                        message: data
-                            ? `New Title deed record added.`
-                            : `An error occurred while adding record.`
-                    })
-                }
-            }
-        )
-        // }
-    }
+    // onSubmit(e) {
+    //     e.preventDefault()
+    //     // if (this.isValid()) {
+    //     this.setState({errors: {}, isLoading: true})
+    //     this.props.graphql
+    //         .query({
+    //             fetchOptionsOverride: fetchOptionsOverride,
+    //             resetOnLoad: true,
+    //             operation: {
+    //                 variables: {
+    //                     title_number: this.title_number.state,
+    //                     approximate_area: this.approximate_area.state,
+    //                     registry: this.registry.state,
+    //                     names: this.names.state,
+    //                     postal_address: this.postal_address.state,
+    //                     district: this.district.state,
+    //                     date: this.date.state,
+    //                 },
+    //                 query: addTitleDeed
+    //             }
+    //         })
+    //         .request.then(({data}) => {
+    //             if (data) {
+    //                 this.setState({
+    //                     title_number: '',
+    //                     approximate_area: '',
+    //                     registry: '',
+    //                     names: '',
+    //                     postal_address: '',
+    //                     district: '',
+    //                     date: '',
+    //                     message: data
+    //                         ? `New Title deed record added.`
+    //                         : `An error occurred while adding record.`
+    //                 })
+    //             }
+    //         }
+    //     )
+    //     // }
+    // }
 
     onChange(e) {
         this.setState({[e.target.name]: e.target.value})
@@ -124,13 +131,19 @@ class NewTitleDeed extends React.Component {
                     value={this.state.postal_address}
                     onChange={this.onChange}
                 />
-                <TextFieldGroup
-                    label="District"
-                    type="text"
-                    name="district"
-                    value={this.state.district}
-                    onChange={this.onChange}
-                />
+                <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">District</label>
+                    <div className="col-sm-9 ">
+                        <Select
+                            closeOnSelect={true}
+                            onChange={this.onChange}
+                            options={districtOptions}
+                            placeholder="Search district"
+                            removeSelected={true}
+                            value={this.state.district}
+                        />
+                    </div>
+                </div>
                 <TextFieldGroup
                     label="Date"
                     type="date"

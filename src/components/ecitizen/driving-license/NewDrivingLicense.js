@@ -1,8 +1,41 @@
 import React from 'react'
 import {isEmpty} from 'lodash'
-import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
 import TextFieldGroup from "../../shared/TextFieldsGroup"
+import Select from 'react-select'
 
+let vehicleClasses = [{
+    label: "A",
+    value: "A"
+},
+    {
+        label: "B",
+        value: "B"
+    },
+    {
+        label: "C",
+        value: "C"
+    },
+    {
+        label: "D",
+        value: "D"
+    },
+    {
+        label: "E",
+        value: "E"
+    },
+    {
+        label: "F",
+        value: "F"
+    },
+    {
+        label: "G",
+        value: "G"
+    },
+    {
+        label: "H",
+        value: "H"
+    },
+]
 
 class NewDrivingLicense extends React.Component {
     constructor(props) {
@@ -17,55 +50,60 @@ class NewDrivingLicense extends React.Component {
             date: '',
         }
 
-        this.onSubmit = this.onSubmit.bind(this)
+        // this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
 
     }
 
 
-    onSubmit(e) {
-        e.preventDefault()
-        // if (this.isValid()) {
-        this.setState({errors: {}, isLoading: true})
-        this.props.graphql
-            .query({
-                fetchOptionsOverride: fetchOptionsOverride,
-                resetOnLoad: true,
-                operation: {
-                    variables: {
-                        dob: this.dob.state,
-                        vehicle_classes: this.vehicle_classes.state,
-                        registry: this.registry.state,
-                        names: this.names.state,
-                        postal_address: this.postal_address.state,
-                        expiry: this.expiry.state,
-                        date: this.date.state,
-                    },
-                    query: addTitleDeed
-                }
-            })
-            .request.then(({data}) => {
-                if (data) {
-                    this.setState({
-                        dob: '',
-                        vehicle_classes: '',
-                        registry: '',
-                        names: '',
-                        postal_address: '',
-                        expiry: '',
-                        date: '',
-                        message: data
-                            ? `New Title deed record added.`
-                            : `An error occurred while adding record.`
-                    })
-                }
-            }
-        )
-        // }
-    }
+    // onSubmit(e) {
+    //     e.preventDefault()
+    //     // if (this.isValid()) {
+    //     this.setState({errors: {}, isLoading: true})
+    //     this.props.graphql
+    //         .query({
+    //             fetchOptionsOverride: fetchOptionsOverride,
+    //             resetOnLoad: true,
+    //             operation: {
+    //                 variables: {
+    //                     dob: this.state.dob,
+    //                     vehicle_classes: this.state.vehicle_classes,
+    //                     registry: this.state.registry,
+    //                     names: this.state.names,
+    //                     postal_address: this.state.postal_address,
+    //                     expiry: this.state.expiry,
+    //                     date: this.state.date,
+    //                 },
+    //                 query: addTitleDeed
+    //             }
+    //         })
+    //         .request.then(({data}) => {
+    //             if (data) {
+    //                 this.setState({
+    //                     dob: '',
+    //                     vehicle_classes: '',
+    //                     registry: '',
+    //                     names: '',
+    //                     postal_address: '',
+    //                     expiry: '',
+    //                     date: '',
+    //                     message: data
+    //                         ? `New Title deed record added.`
+    //                         : `An error occurred while adding record.`
+    //                 })
+    //             }
+    //         }
+    //     )
+    //     // }
+    // }
 
     onChange(e) {
         this.setState({[e.target.name]: e.target.value})
+
+    }
+
+    onChangeVehicleClasses(vehicle_classes) {
+        this.setState({vehicle_classes})
 
     }
 
@@ -87,19 +125,25 @@ class NewDrivingLicense extends React.Component {
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
-                    label="Date of birth"
+                    label="date of birth"
                     type="number"
                     name="dob"
                     value={this.state.dob}
                     onChange={this.onChange}
                 />
-                <TextFieldGroup
-                    label="Vehicle Classes Licensed"
-                    type="text"
-                    name="vehicle_classes"
-                    value={this.state.vehicle_classes}
-                    onChange={this.onChange}
-                />
+                <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Vehicle classes licensed</label>
+                    <div className="col-sm-9 ">
+                        <Select
+                            closeOnSelect={true}
+                            onChange={this.onChangeVehicleClasses}
+                            options={vehicleClasses}
+                            placeholder="Search vehicle classes"
+                            removeSelected={true}
+                            value={this.state.vehicle_classes}
+                        />
+                    </div>
+                </div>
                 <TextFieldGroup
                     label="Postal Address"
                     type="text"
@@ -116,7 +160,7 @@ class NewDrivingLicense extends React.Component {
                 />
                 <TextFieldGroup
                     label="Date of expiry"
-                    type="text"
+                    type="date"
                     name="expiry"
                     value={this.state.expiry}
                     onChange={this.onChange}
