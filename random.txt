@@ -17,7 +17,6 @@ tare_weight
 tax_class
 axles
 previous_reg_country
-previous_reg
 kra_pin
 full_names
 postal_address

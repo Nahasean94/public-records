@@ -1,22 +1,8 @@
 import React from 'react'
 import {isEmpty} from 'lodash'
 import {fetchOptionsOverride} from "../../../shared/fetchOverrideOptions"
-import {addPrimarySchoolRecord, students} from "../../../shared/queries"
-import Select from 'react-select'
-import {Query} from 'graphql-react'
 import TextFieldGroup from "../../shared/TextFieldsGroup"
 
-let marksOptions = () => {
-    let marks = []
-    for (let i = 0; i <= 100; i++) {
-        marks.push({
-            label: i,
-            value: i
-        })
-    }
-    return marks
-}
-let upiOptions
 
 class NewDrivingLicense extends React.Component {
     constructor(props) {
@@ -47,13 +33,13 @@ class NewDrivingLicense extends React.Component {
                 resetOnLoad: true,
                 operation: {
                     variables: {
-                        dob:this.dob.state,
-                        vehicle_classes:this.vehicle_classes.state,
-                        registry:this.registry.state,
-                        names:this.names.state,
-                        postal_address:this.postal_address.state,
-                        expiry:this.expiry.state,
-                        date:this.date.state,
+                        dob: this.dob.state,
+                        vehicle_classes: this.vehicle_classes.state,
+                        registry: this.registry.state,
+                        names: this.names.state,
+                        postal_address: this.postal_address.state,
+                        expiry: this.expiry.state,
+                        date: this.date.state,
                     },
                     query: addTitleDeed
                 }
@@ -79,7 +65,7 @@ class NewDrivingLicense extends React.Component {
     }
 
     onChange(e) {
-        this.setState({[e.target.name]:e.target.value})
+        this.setState({[e.target.name]: e.target.value})
 
     }
 
