@@ -43,11 +43,11 @@ class NewDrivingLicense extends React.Component {
         this.state = {
             dob: '',
             vehicle_classes: '',
-            registry: '',
             names: '',
             postal_address: '',
             expiry: '',
-            date: '',
+            date_of_issue: '',
+            nationalID: '',
         }
 
         // this.onSubmit = this.onSubmit.bind(this)
@@ -72,7 +72,7 @@ class NewDrivingLicense extends React.Component {
     //                     names: this.state.names,
     //                     postal_address: this.state.postal_address,
     //                     expiry: this.state.expiry,
-    //                     date: this.state.date,
+    //                     date_of_issue: this.state.date_of_issue,
     //                 },
     //                 query: addTitleDeed
     //             }
@@ -86,7 +86,7 @@ class NewDrivingLicense extends React.Component {
     //                     names: '',
     //                     postal_address: '',
     //                     expiry: '',
-    //                     date: '',
+    //                     date_of_issue: '',
     //                     message: data
     //                         ? `New Title deed record added.`
     //                         : `An error occurred while adding record.`
@@ -125,7 +125,7 @@ class NewDrivingLicense extends React.Component {
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
-                    label="date of birth"
+                    label="date_of_issue of birth"
                     type="number"
                     name="dob"
                     value={this.state.dob}
@@ -154,8 +154,15 @@ class NewDrivingLicense extends React.Component {
                 <TextFieldGroup
                     label="Date issued"
                     type="date"
-                    name="date"
-                    value={this.state.date}
+                    name="date_of_issue"
+                    value={this.state.date_of_issue}
+                    onChange={this.onChange}
+                />
+                <TextFieldGroup
+                    label="National ID"
+                    type="number"
+                    name="nationalID"
+                    value={this.state.nationalID}
                     onChange={this.onChange}
                 />
                 <TextFieldGroup

@@ -28,8 +28,6 @@ let courseOptions = [{
         value: "Human Resource"
     },
 ]
-
-
 let scoreOptions = [{
     value: "1st Class",
     label: "1st Class"
@@ -56,9 +54,7 @@ class Undergraduate extends React.Component {
             score: '',
         }
 
-        // this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
-
     }
 
 
