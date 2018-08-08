@@ -153,7 +153,7 @@ contract PublicRecords {
         bytes32 district
     );
 
-    mapping(bytes32 => TitleDeed) titledeeds;
+    mapping(uint256 => TitleDeed) titledeeds;
 
     struct DrivingLicense {
         uint256 nationalID;
@@ -169,13 +169,12 @@ contract PublicRecords {
     event AddedDrivingLicense(
         uint256 nationalID,
         bytes32 dob,
-        bytes32[] vehicle_classes,
         bytes32 names,
         bytes32 postal_address,
         bytes32 expiry
     );
 
-    mapping(bytes32 => DrivingLicense) drivingLicenses;
+    mapping(uint256 => DrivingLicense) drivingLicenses;
 
     struct Logbook {
         bytes32 entry_number;
@@ -183,7 +182,7 @@ contract PublicRecords {
         bytes32 chassis;
         bytes32 make;
         bytes32 model;
-        bytes32 type;
+        bytes32 car_type;
         bytes32 body;
         bytes32 fuel;
         bytes32 manufacture_year;
@@ -209,7 +208,7 @@ contract PublicRecords {
         bytes32 chasis,
         bytes32 make,
         bytes32 model,
-        bytes32 type
+        bytes32 car_type
     );
 
     mapping(bytes32 => Logbook) logbooks;
@@ -472,64 +471,64 @@ contract PublicRecords {
         }
         return false;
     }
-    //add Logbook record
-    function addUndergraduateRecord(
-        bytes32 entry_number,
-        bytes32 car_number,
-        bytes32 chassis,
-        bytes32 make,
-        bytes32 model,
-        bytes32 type,
-        bytes32 body,
-        bytes32 fuel,
-        bytes32 manufacture_year,
-        uint256 rating,
-        bytes32 engine_number,
-        bytes32 color,
-        bytes32 registration_date,
-        bytes32 duty,
-        bytes32 passengers,
-        uint256 tare_weight,
-        bytes32 tax_class,
-        uint256 axles,
-        bytes32 previous_reg_country,
-        bytes32 kra_pin,
-        bytes32 full_names,
-        bytes32 postal_address
-    ) public {
-        require(!isLogbookExists(car_number));
-        logbooks[car_number] = Logbook(entry_number,
-            car_number,
-            chassis,
-            make,
-            model,
-            type,
-            body,
-            fuel,
-            manufacture_year,
-            rating,
-            engine_number,
-            color,
-            registration_date,
-            duty,
-            passengers,
-            tare_weight,
-            tax_class,
-            axles,
-            previous_reg_country,
-            kra_pin,
-            full_names,
-            postal_address,
-            true);
-        emit AddedLogbook(
-            entry_number,
-            car_number,
-            chassis,
-            make,
-            model,
-            type
-        );
-    }
+//    //add Logbook record
+//    function addUndergraduateRecord(
+//        bytes32 entry_number,
+//        bytes32 car_number,
+//        bytes32 chassis,
+//        bytes32 make,
+//        bytes32 model,
+//        bytes32 car_type,
+//        bytes32 body,
+//        bytes32 fuel,
+//        bytes32 manufacture_year,
+//        uint256 rating,
+//        bytes32 engine_number,
+//        bytes32 color,
+//        bytes32 registration_date,
+//        bytes32 duty,
+//        bytes32 passengers,
+//        uint256 tare_weight,
+//        bytes32 tax_class,
+//        uint256 axles,
+//        bytes32 previous_reg_country,
+//        bytes32 kra_pin,
+//        bytes32 full_names,
+//        bytes32 postal_address
+//    ) public {
+//        require(!isLogbookExists(car_number));
+//        logbooks[car_number] = Logbook(entry_number,
+//            car_number,
+//            chassis,
+//            make,
+//            model,
+//            car_type,
+//            body,
+//            fuel,
+//            manufacture_year,
+//            rating,
+//            engine_number,
+//            color,
+//            registration_date,
+//            duty,
+//            passengers,
+//            tare_weight,
+//            tax_class,
+//            axles,
+//            previous_reg_country,
+//            kra_pin,
+//            full_names,
+//            postal_address,
+//            true);
+//        emit AddedLogbook(
+//            entry_number,
+//            car_number,
+//            chassis,
+//            make,
+//            model,
+//            car_type
+//        );
+//    }
     /***
     Divide the logbook details into parts of 6 variables each
     **/
@@ -542,7 +541,7 @@ contract PublicRecords {
         logbooks[car_number].chassis,
         logbooks[car_number].make,
         logbooks[car_number].model,
-        logbooks[car_number].type
+        logbooks[car_number].car_type
         );
 
     }
@@ -573,12 +572,12 @@ contract PublicRecords {
 
     }
     //return logbook owner
-    function getLogbookOwner(bytes32 car_number) public constant returns (bytes32, bytes32, uint256){
+    function getLogbookOwner(bytes32 car_number) public constant returns (bytes32, bytes32, bytes32){
         require(isLogbookExists(car_number));
         return (
         logbooks[car_number].kra_pin,
         logbooks[car_number].full_names,
-        logbooks[car_number].postal_address,
+        logbooks[car_number].postal_address
         );
 
     }
@@ -610,7 +609,7 @@ contract PublicRecords {
             district,
             date,
             true);
-        emit AddedLogBook(
+        emit AddedTitleDeed(
             title_number,
             approximate_area,
             registry,
@@ -619,7 +618,7 @@ contract PublicRecords {
             district);
     }
     //get a title deed
-    function getTitleDeed(bytes32 title_number) public constant returns (uint256, uint256, uint256, bytes32){
+    function getTitleDeed(uint256 title_number) public constant returns (uint256, uint256, uint256, bytes32){
         require(isTitleDeedExists(title_number));
         return (
         titledeeds[title_number].title_number,
@@ -629,7 +628,7 @@ contract PublicRecords {
 
     }
     //get a title deed owner
-    function getTitleDeedOwner(bytes32 title_number) public constant returns (bytes32, bytes32, bytes32){
+    function getTitleDeedOwner(uint256 title_number) public constant returns (bytes32, bytes32, bytes32){
         require(isTitleDeedExists(title_number));
         return (
         titledeeds[title_number].names,
@@ -639,7 +638,7 @@ contract PublicRecords {
 
     }
     //is Title deed record exist
-    function isTitleDeedExists(bytes32 title_number) private constant returns (bool){
+    function isTitleDeedExists(uint256 title_number) private constant returns (bool){
         if (titledeeds[title_number].exists) {
             return true;
         }
@@ -657,7 +656,7 @@ contract PublicRecords {
         bytes32 date_of_issue
     ) public {
         require(!isDrivingLicenseExists(nationalID));
-        titledeeds[nationalID] = TitleDeed(
+        drivingLicenses[nationalID] = DrivingLicense(
             nationalID,
             dob,
             vehicle_classes,
@@ -666,16 +665,16 @@ contract PublicRecords {
             expiry,
             date_of_issue,
             true);
-        emit AddedLogBook(
+
+        emit AddedDrivingLicense(
             nationalID,
             dob,
-            vehicle_classes,
             names,
             postal_address,
             expiry);
     }
     //get a title deed
-    function getDrivingLicense(bytes32 nationalID) public constant returns (bytes32[], bytes32, bytes32){
+    function getDrivingLicense(uint256 nationalID) public constant returns (bytes32[], bytes32, bytes32){
         require(isDrivingLicenseExists(nationalID));
         return (
         drivingLicenses[nationalID].vehicle_classes,
@@ -684,7 +683,7 @@ contract PublicRecords {
 
     }
     //get a title deed owner
-    function getDrivingLicenseOwner(bytes32 nationalID) public constant returns (uint256, bytes32, bytes32, bytes32){
+    function getDrivingLicenseOwner(uint256 nationalID) public constant returns (uint256, bytes32, bytes32, bytes32){
         require(isDrivingLicenseExists(nationalID));
         return (
         drivingLicenses[nationalID].nationalID,
@@ -693,10 +692,9 @@ contract PublicRecords {
         drivingLicenses[nationalID].names
         );
 
-
     }
     //is Driving License exists
-    function isDrivingLicenseExists(bytes32 nationalID) private constant returns (bool){
+    function isDrivingLicenseExists(uint256 nationalID) private constant returns (bool){
         if (drivingLicenses[nationalID].exists) {
             return true;
         }

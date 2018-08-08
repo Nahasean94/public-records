@@ -23,7 +23,6 @@ export default () => {
                         <Route exact path="/ntsa" component={NewLogBook}/>
                         <Route exact path="/ecitizen" component={Ecitizen}/>
                         <Route exact path="/institution" component={Undergraduate}/>
-
                     </Switch>
                 </App>
 

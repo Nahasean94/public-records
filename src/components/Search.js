@@ -1,10 +1,7 @@
 import React, {Component} from 'react'
-import InstitutionResults from "./search_results/InstitutionResults"
-import SecondarySchoolResults from "./search_results/SecondarySchoolResults"
 import PublicRecords from '../blockchain/build/contracts/PublicRecords.json'
 import getWeb3 from '../utils/getWeb3'
 import promisesAll from 'promise-all'
-import Link from "react-router-dom/es/Link"
 
 const contract = require('truffle-contract')
 
@@ -130,7 +127,7 @@ class Search extends Component {
         const {institutionResult, web3, studentResult} = this.state
         return (
             <div className="container">
-                <form onSubmit={this.onSubmit} >
+                <form onSubmit={this.onSubmit}>
                     <div className="input-group well">
                         <input type="text" className="form-control form-control-sm"
                                placeholder="Search"
@@ -178,7 +175,7 @@ class Search extends Component {
                 </form>
                 <div className="row">
                     {/*{institutionResult && institutionResult.length > 0 && <div className="col-sm-4 card">*/}
-                        {/*<InstitutionResults result={institutionResult} web3Instance={web3}/></div>}*/}
+                    {/*<InstitutionResults result={institutionResult} web3Instance={web3}/></div>}*/}
 
                     <div className="col-sm-1"></div>
 
@@ -189,7 +186,7 @@ class Search extends Component {
                     {/*<PrimarySchoolResults result={studentResult} web3Instance={web3}/>*/}
                     {/*</div>}*/}
                     {/*{studentResult && studentResult.length > 0 && <div className="col-sm-4 card">*/}
-                        {/*<SecondarySchoolResults result={studentResult} web3Instance={web3}/>*/}
+                    {/*<SecondarySchoolResults result={studentResult} web3Instance={web3}/>*/}
                     {/*</div>}*/}
                     {/*<div className="col-sm-4 card">*/}
                     {/*<SecondarySchoolResults/>*/}

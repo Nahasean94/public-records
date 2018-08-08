@@ -2,6 +2,10 @@ import React from 'react'
 import {isEmpty} from 'lodash'
 import TextFieldGroup from "../../shared/TextFieldsGroup"
 import Select from 'react-select'
+import PublicRecords from '../../../blockchain/build/contracts/PublicRecords.json'
+import getWeb3 from '../../../utils/getWeb3'
+
+const contract = require('truffle-contract')
 
 let vehicleClasses = [{
     label: "A",
@@ -42,60 +46,57 @@ class NewDrivingLicense extends React.Component {
         super(props)
         this.state = {
             dob: '',
-            vehicle_classes: '',
+            vehicle_classes:[],
             names: '',
             postal_address: '',
             expiry: '',
             date_of_issue: '',
             nationalID: '',
+            web3: null,
         }
 
-        // this.onSubmit = this.onSubmit.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
+        this.onChangeVehicleClasses = this.onChangeVehicleClasses.bind(this)
 
     }
+    componentWillMount() {
+        // Get network provider and web3 instance.
+        getWeb3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+            })
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
 
+    onSubmit(e) {
+        e.preventDefault()
+        let {vehicle_classes} = this.state
+        vehicle_classes = vehicle_classes.map(host => {
+            return host.value
+        })
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
 
-    // onSubmit(e) {
-    //     e.preventDefault()
-    //     // if (this.isValid()) {
-    //     this.setState({errors: {}, isLoading: true})
-    //     this.props.graphql
-    //         .query({
-    //             fetchOptionsOverride: fetchOptionsOverride,
-    //             resetOnLoad: true,
-    //             operation: {
-    //                 variables: {
-    //                     dob: this.state.dob,
-    //                     vehicle_classes: this.state.vehicle_classes,
-    //                     registry: this.state.registry,
-    //                     names: this.state.names,
-    //                     postal_address: this.state.postal_address,
-    //                     expiry: this.state.expiry,
-    //                     date_of_issue: this.state.date_of_issue,
-    //                 },
-    //                 query: addTitleDeed
-    //             }
-    //         })
-    //         .request.then(({data}) => {
-    //             if (data) {
-    //                 this.setState({
-    //                     dob: '',
-    //                     vehicle_classes: '',
-    //                     registry: '',
-    //                     names: '',
-    //                     postal_address: '',
-    //                     expiry: '',
-    //                     date_of_issue: '',
-    //                     message: data
-    //                         ? `New Title deed record added.`
-    //                         : `An error occurred while adding record.`
-    //                 })
-    //             }
-    //         }
-    //     )
-    //     // }
-    // }
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+console.log(vehicle_classes)
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            publicRecords.deployed().then((instance) => {
+                publicRecordsInstance = instance
+                return publicRecordsInstance.addDrivingLicense(this.state.nationalID,this.state.dob,vehicle_classes,this.state.names,this.state.postal_address,this.state.expiry,this.state.date_of_issue, {from: coinbase})
+            }).then((result) => {
+               console.log(result)
+            })
+        })
+
+    }
 
     onChange(e) {
         this.setState({[e.target.name]: e.target.value})
@@ -125,8 +126,8 @@ class NewDrivingLicense extends React.Component {
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
-                    label="date_of_issue of birth"
-                    type="number"
+                    label="Date of birth"
+                    type="date"
                     name="dob"
                     value={this.state.dob}
                     onChange={this.onChange}
@@ -141,6 +142,7 @@ class NewDrivingLicense extends React.Component {
                             placeholder="Search vehicle classes"
                             removeSelected={true}
                             value={this.state.vehicle_classes}
+                            multi={true}
                         />
                     </div>
                 </div>
