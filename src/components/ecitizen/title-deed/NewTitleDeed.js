@@ -2,6 +2,10 @@ import React from 'react'
 import {isEmpty} from 'lodash'
 import TextFieldGroup from "../../shared/TextFieldsGroup"
 import Select from 'react-select'
+import getWeb3 from "../../../utils/getWeb3"
+import PublicRecords from "../../../blockchain/build/contracts/PublicRecords"
+
+const contract = require('truffle-contract')
 
 let districtOptions = [{
     label: "Nakuru",
@@ -33,56 +37,58 @@ class NewTitleDeed extends React.Component {
             postal_address: '',
             district: '',
             date: '',
+            web3: null,
         }
-        // this.onSubmit = this.onSubmit.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
+        this.onChangeDistrict = this.onChangeDistrict.bind(this)
+
 
     }
 
 
-    // onSubmit(e) {
-    //     e.preventDefault()
-    //     // if (this.isValid()) {
-    //     this.setState({errors: {}, isLoading: true})
-    //     this.props.graphql
-    //         .query({
-    //             fetchOptionsOverride: fetchOptionsOverride,
-    //             resetOnLoad: true,
-    //             operation: {
-    //                 variables: {
-    //                     title_number: this.title_number.state,
-    //                     approximate_area: this.approximate_area.state,
-    //                     registry: this.registry.state,
-    //                     names: this.names.state,
-    //                     postal_address: this.postal_address.state,
-    //                     district: this.district.state,
-    //                     date: this.date.state,
-    //                 },
-    //                 query: addTitleDeed
-    //             }
-    //         })
-    //         .request.then(({data}) => {
-    //             if (data) {
-    //                 this.setState({
-    //                     title_number: '',
-    //                     approximate_area: '',
-    //                     registry: '',
-    //                     names: '',
-    //                     postal_address: '',
-    //                     district: '',
-    //                     date: '',
-    //                     message: data
-    //                         ? `New Title deed record added.`
-    //                         : `An error occurred while adding record.`
-    //                 })
-    //             }
-    //         }
-    //     )
-    //     // }
-    // }
+    componentWillMount() {
+        // Get network provider and web3 instance.
+        getWeb3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+            })
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
+
+    onSubmit(e) {
+        e.preventDefault()
+        let {district} = this.state
+        district = district.value
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
+
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            publicRecords.deployed().then((instance) => {
+                publicRecordsInstance = instance
+                return publicRecordsInstance.addTitleDeed(this.state.title_number, this.state.approximate_area, this.state.registry, this.state.names, this.state.expiry, this.state.postal_address, district, this.state.date, {from: coinbase})
+            }).then((result) => {
+                console.log(result)
+            })
+        })
+
+    }
 
     onChange(e) {
         this.setState({[e.target.name]: e.target.value})
+
+    }
+
+    onChangeDistrict(district) {
+        this.setState({district})
 
     }
 
@@ -104,8 +110,8 @@ class NewTitleDeed extends React.Component {
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
-                    label="Approximate Area"
-                    type="text"
+                    label="Approximate Area(acres)"
+                    type="number"
                     name="approximate_area"
                     value={this.state.approximate_area}
                     onChange={this.onChange}
@@ -136,7 +142,7 @@ class NewTitleDeed extends React.Component {
                     <div className="col-sm-9 ">
                         <Select
                             closeOnSelect={true}
-                            onChange={this.onChange}
+                            onChange={this.onChangeDistrict}
                             options={districtOptions}
                             placeholder="Search district"
                             removeSelected={true}
