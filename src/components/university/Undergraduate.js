@@ -4,6 +4,9 @@ import Select from 'react-select'
 import TextFieldGroup from "../shared/TextFieldsGroup"
 import PublicRecords from "../../blockchain/build/contracts/PublicRecords"
 import getWeb3 from "../../utils/getWeb3"
+import Menu from "./Menu"
+import PropTypes from "prop-types"
+import Logbooks from "../ntsa/Logbooks"
 
 const contract = require('truffle-contract')
 
@@ -57,15 +60,15 @@ class Undergraduate extends React.Component {
             course: '',
             upi: '',
             score: '',
-            date:'',
-            institution:'MOI',
+            date: '',
+            institution: 'MOI',
             web3: null,
         }
 
         this.onChange = this.onChange.bind(this)
-       this.onChangeCourseOptions=this.onChangeCourseOptions.bind(this)
-       this.onChangeScoreOptions=this.onChangeScoreOptions.bind(this)
-       this.onSubmit=this.onSubmit.bind(this)
+        this.onChangeCourseOptions = this.onChangeCourseOptions.bind(this)
+        this.onChangeScoreOptions = this.onChangeScoreOptions.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
 
@@ -83,7 +86,7 @@ class Undergraduate extends React.Component {
     }
 
     onSubmit(e) {
-         e.preventDefault()
+        e.preventDefault()
         const publicRecords = contract(PublicRecords)
         publicRecords.setProvider(this.state.web3.currentProvider)
 
@@ -94,7 +97,7 @@ class Undergraduate extends React.Component {
 
             publicRecords.deployed().then((instance) => {
                 publicRecordsInstance = instance
-                return publicRecordsInstance.addUndergraduateRecord(this.state.upi, this.state.course, this.state.score, this.state.date, this.state.institution,{from: coinbase})
+                return publicRecordsInstance.addUndergraduateRecord(this.state.upi, this.state.course, this.state.score, this.state.date, this.state.institution, {from: coinbase})
             }).then((result) => {
                 console.log(result)
             })
@@ -110,6 +113,7 @@ class Undergraduate extends React.Component {
         this.setState({course})
 
     }
+
     onChangeScoreOptions(score) {
         this.setState({score})
 
@@ -124,64 +128,71 @@ class Undergraduate extends React.Component {
             return <div className="alert alert-info">{message}</div>
         }
         return (
-            <div>
-                <div className="col-sm-6 offset-sm-3">
-                    <form onSubmit={this.onSubmit}>
-                        <TextFieldGroup
-                            label="Student UPI"
-                            type="text"
-                            name="upi"
-                            value={this.state.upi}
-                            onChange={this.onChange}
-                        />
-                        <TextFieldGroup
-                            label="Year"
-                            type="date"
-                            name="date"
-                            value={this.state.date}
-                            onChange={this.onChange}
-                        />
-                        <div className="form-group row">
-                            <label className="col-sm-3 col-form-label">Course</label>
-                            <div className="col-sm-9 ">
-                                <Select
-                                    closeOnSelect={true}
-                                    onChange={this.onChangeCourseOptions}
-                                    options={courseOptions}
-                                    placeholder="Search Course"
-                                    removeSelected={true}
-                                    value={this.state.course}
-                                />
+            <div className="container">
+                <div className="row">
+                    <div className="col-sm-2">
+                        <Menu router={this.context.router} active="add-record"/>
+                    </div>
+                    <div className="col-sm-6 offset-sm-1">
+                        <form onSubmit={this.onSubmit}>
+                            <TextFieldGroup
+                                label="Student UPI"
+                                type="text"
+                                name="upi"
+                                value={this.state.upi}
+                                onChange={this.onChange}
+                            />
+                            <TextFieldGroup
+                                label="Year"
+                                type="date"
+                                name="date"
+                                value={this.state.date}
+                                onChange={this.onChange}
+                            />
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Course</label>
+                                <div className="col-sm-9 ">
+                                    <Select
+                                        closeOnSelect={true}
+                                        onChange={this.onChangeCourseOptions}
+                                        options={courseOptions}
+                                        placeholder="Search Course"
+                                        removeSelected={true}
+                                        value={this.state.course}
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="form-group row">
-                            <label className="col-sm-3 col-form-label">Score</label>
-                            <div className="col-sm-9 ">
-                                <Select
-                                    closeOnSelect={true}
-                                    onChange={this.onChangeScoreOptions}
-                                    options={scoreOptions}
-                                    placeholder="Search score"
-                                    removeSelected={true}
-                                    value={this.state.score}
-                                />
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Score</label>
+                                <div className="col-sm-9 ">
+                                    <Select
+                                        closeOnSelect={true}
+                                        onChange={this.onChangeScoreOptions}
+                                        options={scoreOptions}
+                                        placeholder="Search score"
+                                        removeSelected={true}
+                                        value={this.state.score}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-group row">
-                            <div className="col-sm-9 offset-3">
-                                <button
-                                    className="btn btn-dark btn-sm form-control "
-                                    type="submit">Save
-                                </button>
+                            <div className="form-group row">
+                                <div className="col-sm-9 offset-3">
+                                    <button
+                                        className="btn btn-dark btn-sm form-control "
+                                        type="submit">Save
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
 
+                    </div>
                 </div>
             </div>
         )
     }
 }
-
+Undergraduate.contextTypes = {
+    router: PropTypes.object.isRequired
+}
 export default Undergraduate

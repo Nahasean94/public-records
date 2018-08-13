@@ -100,10 +100,11 @@ body {
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-    color: white;
-    background-color: #ff6c18;
-    font-size: 1.2rem;
+    border-bottom: #ff6c18 2px solid;
+    font-size: 1.5rem;
     width: 100%;
+    color: black!important;
+    background-color: white!important;
 }
 .active-link{
     border-bottom: #ff6c18 2px solid;
