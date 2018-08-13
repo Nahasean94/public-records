@@ -2,6 +2,13 @@ import React from 'react'
 import {isEmpty} from 'lodash'
 import Select from 'react-select'
 import TextFieldGroup from "../shared/TextFieldsGroup"
+import PublicRecords from "../../blockchain/build/contracts/PublicRecords"
+import getWeb3 from "../../utils/getWeb3"
+import Menu from "./Menu"
+import PropTypes from "prop-types"
+import Logbooks from "../ntsa/Logbooks"
+
+const contract = require('truffle-contract')
 
 let courseOptions = [{
     value: "Informatics",
@@ -51,61 +58,64 @@ class Undergraduate extends React.Component {
         super(props)
         this.state = {
             course: '',
+            upi: '',
             score: '',
+            date: '',
+            institution: 'MOI',
+            web3: null,
         }
 
         this.onChange = this.onChange.bind(this)
+        this.onChangeCourseOptions = this.onChangeCourseOptions.bind(this)
+        this.onChangeScoreOptions = this.onChangeScoreOptions.bind(this)
+        this.onSubmit = this.onSubmit.bind(this)
     }
 
 
-    // onSubmit(e) {
-    //     e.preventDefault()
-    //     // if (this.isValid()) {
-    //     this.setState({errors: {}, isLoading: true})
-    //     this.props.graphql
-    //         .query({
-    //             fetchOptionsOverride: fetchOptionsOverride,
-    //             resetOnLoad: true,
-    //             operation: {
-    //                 variables: {
-    //                     dob: this.state.dob,
-    //                     vehicle_classes: this.state.vehicle_classes,
-    //                     registry: this.state.registry,
-    //                     names: this.state.names,
-    //                     postal_address: this.state.postal_address,
-    //                     expiry: this.state.expiry,
-    //                     date: this.state.date,
-    //                 },
-    //                 query: addTitleDeed
-    //             }
-    //         })
-    //         .request.then(({data}) => {
-    //             if (data) {
-    //                 this.setState({
-    //                     dob: '',
-    //                     vehicle_classes: '',
-    //                     registry: '',
-    //                     names: '',
-    //                     postal_address: '',
-    //                     expiry: '',
-    //                     date: '',
-    //                     message: data
-    //                         ? `New Title deed record added.`
-    //                         : `An error occurred while adding record.`
-    //                 })
-    //             }
-    //         }
-    //     )
-    //     // }
-    // }
+    componentWillMount() {
+        // Get network provider and web3 instance.
+        getWeb3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+            })
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
+
+    onSubmit(e) {
+        e.preventDefault()
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
+
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            publicRecords.deployed().then((instance) => {
+                publicRecordsInstance = instance
+                return publicRecordsInstance.addUndergraduateRecord(this.state.upi, this.state.course, this.state.score, this.state.date, this.state.institution, {from: coinbase})
+            }).then((result) => {
+                console.log(result)
+            })
+        })
+    }
 
     onChange(e) {
         this.setState({[e.target.name]: e.target.value})
 
     }
 
-    onChangeVehicleClasses(vehicle_classes) {
-        this.setState({vehicle_classes})
+    onChangeCourseOptions(course) {
+        this.setState({course})
+
+    }
+
+    onChangeScoreOptions(score) {
+        this.setState({score})
 
     }
 
@@ -118,64 +128,71 @@ class Undergraduate extends React.Component {
             return <div className="alert alert-info">{message}</div>
         }
         return (
-            <div>
-                <div className="col-sm-6 offset-sm-3">
-                    <form onSubmit={this.onSubmit}>
-                        <TextFieldGroup
-                            label="Full names"
-                            type="text"
-                            name="names"
-                            value={this.state.names}
-                            onChange={this.onChange}
-                        />
-                        <TextFieldGroup
-                            label="Year"
-                            type="date"
-                            name="year"
-                            value={this.state.year}
-                            onChange={this.onChange}
-                        />
-                        <div className="form-group row">
-                            <label className="col-sm-3 col-form-label">Course</label>
-                            <div className="col-sm-9 ">
-                                <Select
-                                    closeOnSelect={true}
-                                    onChange={this.onChange}
-                                    options={courseOptions}
-                                    placeholder="Search Course"
-                                    removeSelected={true}
-                                    value={this.state.course}
-                                />
+            <div className="container">
+                <div className="row">
+                    <div className="col-sm-2">
+                        <Menu router={this.context.router} active="add-record"/>
+                    </div>
+                    <div className="col-sm-6 offset-sm-1">
+                        <form onSubmit={this.onSubmit}>
+                            <TextFieldGroup
+                                label="Student UPI"
+                                type="text"
+                                name="upi"
+                                value={this.state.upi}
+                                onChange={this.onChange}
+                            />
+                            <TextFieldGroup
+                                label="Year"
+                                type="date"
+                                name="date"
+                                value={this.state.date}
+                                onChange={this.onChange}
+                            />
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Course</label>
+                                <div className="col-sm-9 ">
+                                    <Select
+                                        closeOnSelect={true}
+                                        onChange={this.onChangeCourseOptions}
+                                        options={courseOptions}
+                                        placeholder="Search Course"
+                                        removeSelected={true}
+                                        value={this.state.course}
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="form-group row">
-                            <label className="col-sm-3 col-form-label">Score</label>
-                            <div className="col-sm-9 ">
-                                <Select
-                                    closeOnSelect={true}
-                                    onChange={this.onChange}
-                                    options={scoreOptions}
-                                    placeholder="Search score"
-                                    removeSelected={true}
-                                    value={this.state.score}
-                                />
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Score</label>
+                                <div className="col-sm-9 ">
+                                    <Select
+                                        closeOnSelect={true}
+                                        onChange={this.onChangeScoreOptions}
+                                        options={scoreOptions}
+                                        placeholder="Search score"
+                                        removeSelected={true}
+                                        value={this.state.score}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="form-group row">
-                            <div className="col-sm-9 offset-3">
-                                <button
-                                    className="btn btn-dark btn-sm form-control "
-                                    type="submit">Save
-                                </button>
+                            <div className="form-group row">
+                                <div className="col-sm-9 offset-3">
+                                    <button
+                                        className="btn btn-dark btn-sm form-control "
+                                        type="submit">Save
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
 
+                    </div>
                 </div>
             </div>
         )
     }
 }
-
+Undergraduate.contextTypes = {
+    router: PropTypes.object.isRequired
+}
 export default Undergraduate

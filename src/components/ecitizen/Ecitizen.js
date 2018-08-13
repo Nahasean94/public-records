@@ -1,10 +1,12 @@
 import React from 'react';
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
+import { TabContent, TabPane, Nav, NavItem, NavLink,  Button } from 'reactstrap';
 import classnames from 'classnames';
 import NewTitleDeed from "./title-deed/NewTitleDeed"
 import NewDrivingLicense from "./driving-license/NewDrivingLicense"
+import Menu from "./Menu"
+import PropTypes from 'prop-types'
 
-export default class Example extends React.Component {
+class Ecitizen extends React.Component {
     constructor(props) {
         super(props);
 
@@ -23,8 +25,12 @@ export default class Example extends React.Component {
     }
     render() {
         return (
+            <div className="container">
             <div className="row">
-            <div className="col-sm-6 offset-sm-3">
+                <div className="col-sm-3">
+                    <Menu router={this.context.router} active="add-record"/>
+                </div>
+            <div className="col-sm-6 offset-sm-1">
                 <Nav tabs>
                     <NavItem>
                         <NavLink
@@ -54,6 +60,11 @@ export default class Example extends React.Component {
                 </TabContent>
             </div>
             </div>
+            </div>
         );
     }
 }
+Ecitizen.contextTypes = {
+    router: PropTypes.object.isRequired
+}
+export default Ecitizen

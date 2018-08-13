@@ -13,16 +13,16 @@ class NavigationBar extends React.Component {
             console.log(window.location.pathname)
             this.state.active = 'home'
         }
-        else if (window.location.pathname === '/ntsa') {
+        else if (window.location.pathname.split('/')[1] === 'ntsa') {
             this.state.active = 'ntsa'
         }
-        else if (window.location.pathname === '/ecitizen') {
+        else if (window.location.pathname.split('/')[1] === 'ecitizen') {
             this.state.active = 'ecitizen'
         }
-        else if (window.location.pathname === '/knec') {
+        else if (window.location.pathname.split('/')[1] === 'knec') {
             this.state.active = 'knec'
         }
-        else if (window.location.pathname === '/institution') {
+        else if (window.location.pathname.split('/')[1] === 'institution') {
             this.state.active = 'institution'
         }
         this.onChangeActive = this.onChangeActive.bind(this)
@@ -48,22 +48,22 @@ class NavigationBar extends React.Component {
                                 <li className="nav-item">
                                     <Link
                                         className={classnames("nav-link", {" nav-link active-link": active === 'knec'})}
-                                        to="/knec" onClick={() => this.onChangeActive('knec')}>KNEC</Link>
+                                        to="/knec/kcpe" onClick={() => this.onChangeActive('knec')}>KNEC</Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link
                                         className={classnames("nav-link", {" nav-link active-link": active === 'ntsa'})}
-                                        to="/ntsa" onClick={() => this.onChangeActive('ntsa')}>NTSA</Link>
+                                        to="/ntsa/add-record" onClick={() => this.onChangeActive('ntsa')}>NTSA</Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link
                                         className={classnames("nav-link", {" nav-link active-link": active === 'ecitizen'})}
-                                        to="/ecitizen" onClick={() => this.onChangeActive('ecitizen')}>eCitizen</Link>
+                                        to="/ecitizen/add-record" onClick={() => this.onChangeActive('ecitizen')}>eCitizen</Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link
                                         className={classnames("nav-link", {" nav-link active-link": active === 'institution'})}
-                                        to="/institution"
+                                        to="/institution/add-record"
                                         onClick={() => this.onChangeActive('institution')}>Institution</Link>
                                 </li>
                             </ul>

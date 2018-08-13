@@ -5,7 +5,9 @@ import {addPrimarySchoolRecord, students} from "../../../shared/queries"
 import Select from 'react-select'
 import {Query} from 'graphql-react'
 import TextFieldGroup from "../../shared/TextFieldsGroup"
-
+import PublicRecords from "../../../blockchain/build/contracts/PublicRecords"
+import getWeb3 from "../../../utils/getWeb3"
+const contract = require('truffle-contract')
 let marksOptions = () => {
     let marks = []
     for (let i = 0; i <= 100; i++) {
@@ -22,14 +24,15 @@ class KCPE extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            upi: '',
+            upi: 'JKK',
             math: '',
             english: '',
             kiswahili: '',
             science: '',
             social_studies: '',
-            year:'',
-            message: ''
+            date:'',
+            message: '',
+            institution:'QBS'
         }
 
         this.onChangeMath=this.onChangeMath.bind(this)
@@ -42,47 +45,77 @@ class KCPE extends React.Component {
         this.onChange = this.onChange.bind(this)
 
     }
+    componentWillMount() {
+        // Get network provider and web3 instance.
+        getWeb3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+            })
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
+
 
 
     onSubmit(e) {
         e.preventDefault()
+            e.preventDefault()
+            const publicRecords = contract(PublicRecords)
+            publicRecords.setProvider(this.state.web3.currentProvider)
+
+            // Declaring this for later so we can chain functions on SimpleStorage.
+            let publicRecordsInstance
+            // Get accounts.
+            this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+                publicRecords.deployed().then((instance) => {
+                    publicRecordsInstance = instance
+                    return publicRecordsInstance.addUndergraduateRecord(this.state.upi, this.state.english.value, this.state.kiswahili.value, this.state.math.value,this.state.science.value,this.state.social_studies.value,this.state.date,this.state.institution.value,{from: coinbase})
+                }).then((result) => {
+                    console.log(result)
+                })
+            })
+
         // if (this.isValid()) {
             this.setState({errors: {}, isLoading: true})
-            this.props.graphql
-                .query({
-                    fetchOptionsOverride: fetchOptionsOverride,
-                    resetOnLoad: true,
-                    operation: {
-                        variables: {
-                            upi: this.state.upi.value,
-                            math: this.state.math.value,
-                            english: this.state.english.value,
-                            kiswahili: this.state.kiswahili.value,
-                            science: this.state.science.value,
-                            social_studies: this.state.social_studies.value,
-                            year: this.state.year,
-                        },
-                        query: addPrimarySchoolRecord
-                    }
-                })
-                .request.then(({data}) => {
-                    if (data) {
-                        this.setState({
-                            upi: '',
-                            math: '',
-                            english: '',
-                            kiswahili: '',
-                            chemistry: '',
-                            science: '',
-                            social_studies: '',
-                            year:'',
-                            message: data
-                                ? `New KCPE record added.`
-                                : `An error occurred while adding record.`
-                        })
-                    }
-                }
-            )
+            // this.props.graphql
+            //     .query({
+            //         fetchOptionsOverride: fetchOptionsOverride,
+            //         resetOnLoad: true,
+            //         operation: {
+            //             variables: {
+            //                 upi: this.state.upi.value,
+            //                 math: this.state.math.value,
+            //                 english: this.state.english.value,
+            //                 kiswahili: this.state.kiswahili.value,
+            //                 science: this.state.science.value,
+            //                 social_studies: this.state.social_studies.value,
+            //                 date: this.state.date,
+            //             },
+            //             query: addPrimarySchoolRecord
+            //         }
+            //     })
+            //     .request.then(({data}) => {
+            //         if (data) {
+            //             this.setState({
+            //                 upi: '',
+            //                 math: '',
+            //                 english: '',
+            //                 kiswahili: '',
+            //                 chemistry: '',
+            //                 science: '',
+            //                 social_studies: '',
+            //                 date:'',
+            //                 message: data
+            //                     ? `New KCPE record added.`
+            //                     : `An error occurred while adding record.`
+            //             })
+            //         }
+            //     }
+            // )
         // }
     }
 
@@ -124,41 +157,48 @@ class KCPE extends React.Component {
         }
         return (
             <form onSubmit={this.onSubmit}>
-                <Query
-                    loadOnMount
-                    loadOnReset
-                    fetchOptionsOverride={fetchOptionsOverride}
-                    variables={{education: 'primary'}}
-                    query={students}
-                >
-                    {({loading, data}) => {
-                        if (data) {
-                            upiOptions = data.students.map(student => {
-                                return {
-                                    label: student.upi,
-                                    value: student.upi
-                                }
-                            })
-                            return <div className="form-group row">
-                                <label className="col-sm-3 col-form-label">Student UPI</label>
-                                <div className="col-sm-9 "><Select
-                                    closeOnSelect={true}
-                                    onChange={this.onChangeUpi}
-                                    options={upiOptions}
-                                    placeholder="Search Student UPI"
-                                    removeSelected={true}
-                                    value={this.state.upi}
-                                />
-                                </div>
-                            </div>
-                        }
-                        else if (loading) {
-                            return <p>Loading…</p>
-                        }
-                        return <p>Loading failed.</p>
-                    }
-                    }
-                </Query>
+                {/*<Query*/}
+                    {/*loadOnMount*/}
+                    {/*loadOnReset*/}
+                    {/*fetchOptionsOverride={fetchOptionsOverride}*/}
+                    {/*variables={{education: 'primary'}}*/}
+                    {/*query={students}*/}
+                {/*>*/}
+                    {/*{({loading, data}) => {*/}
+                        {/*if (data) {*/}
+                            {/*upiOptions = data.students.map(student => {*/}
+                                {/*return {*/}
+                                    {/*label: student.upi,*/}
+                                    {/*value: student.upi*/}
+                                {/*}*/}
+                            {/*})*/}
+                            {/*return <div className="form-group row">*/}
+                                {/*<label className="col-sm-3 col-form-label">Student UPI</label>*/}
+                                {/*<div className="col-sm-9 "><Select*/}
+                                    {/*closeOnSelect={true}*/}
+                                    {/*onChange={this.onChangeUpi}*/}
+                                    {/*options={upiOptions}*/}
+                                    {/*placeholder="Search Student UPI"*/}
+                                    {/*removeSelected={true}*/}
+                                    {/*value={this.state.upi}*/}
+                                {/*/>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*}*/}
+                        {/*else if (loading) {*/}
+                            {/*return <p>Loading…</p>*/}
+                        {/*}*/}
+                        {/*return <p>Loading failed.</p>*/}
+                    {/*}*/}
+                    {/*}*/}
+                {/*</Query>*/}
+                <TextFieldGroup
+                    label="Student UPI"
+                    type="text"
+                    name="upi"
+                    value={this.state.upi}
+                    onChange={this.onChange}
+                />
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">Math</label>
                     <div className="col-sm-9 ">
@@ -228,8 +268,8 @@ class KCPE extends React.Component {
                 <TextFieldGroup
                     label="Date"
                     type="date"
-                    name="year"
-                    value={this.state.year}
+                    name="date"
+                    value={this.state.date}
                     onChange={this.onChange}
 
                 />
