@@ -25,16 +25,16 @@ class KCSE extends React.Component {
         super(props)
         this.state = {
             upi: '',
-            math: '',
-            english: '',
-            kiswahili: '',
-            chemistry: '',
-            biology: '',
-            physics: '',
-            geography: '',
-            history: '',
-            religion: '',
-            business: '',
+            math: 0,
+            english: 0,
+            kiswahili: 0,
+            chemistry: 0,
+            biology: 0,
+            physics: 0,
+            geography: 0,
+            history: 0,
+            religion: 0,
+            business: 0,
             year:'',
             message: '',
             institution:'MKI'
@@ -79,10 +79,10 @@ class KCSE extends React.Component {
         let publicRecordsInstance
         // Get accounts.
         this.state.web3.eth.getCoinbase((error, coinbase) => {
-
             publicRecords.deployed().then((instance) => {
                 publicRecordsInstance = instance
-                return publicRecordsInstance.addSecondarySchoolRecord(this.state.upi, this.state.english, this.state.kiswahili, this.state.math,this.state.biology,this.state.chemistry,this.state.physics,this.state.history,this.state.geography,this.state.religion,this.state.business,this.state.date,this.state.institution,{from: coinbase})
+                console.log(this.state)
+                return publicRecordsInstance.addSecondarySchoolRecord(this.state.upi, this.state.english.value, this.state.kiswahili.value, this.state.math.value,this.state.biology.value,this.state.chemistry.value,this.state.physics.value,this.state.history.value,this.state.geography.value,this.state.religion.value,this.state.business.value,this.state.date,this.state.institution,{from: coinbase})
             }).then((result) => {
                 console.log(result)
             })
@@ -113,17 +113,18 @@ class KCSE extends React.Component {
             //     .request.then(({data}) => {
             //         if (data) {
             //             this.setState({
-            //                 math: '',
-            //                 english: '',
-            //                 kiswahili: '',
-            //                 chemistry: '',
-            //                 biology: '',
-            //                 physics: '',
-            //                 geography: '',
-            //                 history: '',
-            //                 religion: '',
-            //                 business: '',
-            //                 year:'',
+        // upi:''
+            //                 math: 0,
+            //                 english: 0,
+            //                 kiswahili: 0,
+            //                 chemistry: 0,
+            //                 biology: 0,
+            //                 physics: 0,
+            //                 geography: 0,
+            //                 history: 0,
+            //                 religion: 0,
+            //                 business: 0,
+            //                 year:0,
             //                 message: data
             //                     ? `New KCSE record added.`
             //                     : `An error occurred while adding record.`
@@ -187,42 +188,49 @@ class KCSE extends React.Component {
         }
         return (
             <form onSubmit={this.onSubmit}>
-                <Query
-                    loadOnMount
-                    loadOnReset
-                    fetchOptionsOverride={fetchOptionsOverride}
-                    variables={{education:'secondary'}}
-                    query={students}
-                >
-                    {({loading, data}) => {
-                        if (data) {
-                            upiOptions = data.students.map(student => {
-                                return {
-                                    label: student.upi,
-                                    value: student.upi
-                                }
-                            })
-                            return  <div className="form-group row">
-                                <label className="col-sm-3 col-form-label">Student UPI</label>
-                                <div className="col-sm-9 "><Select
-                                closeOnSelect={true}
-                                onChange={this.onChangeUpi}
-                                options={upiOptions}
-                                placeholder="Search Student UPI"
-                                removeSelected={true}
-                                value={this.state.upi}
+                {/*<Query*/}
+                    {/*loadOnMount*/}
+                    {/*loadOnReset*/}
+                    {/*fetchOptionsOverride={fetchOptionsOverride}*/}
+                    {/*variables={{education:'secondary'}}*/}
+                    {/*query={students}*/}
+                {/*>*/}
+                    {/*{({loading, data}) => {*/}
+                        {/*if (data) {*/}
+                            {/*upiOptions = data.students.map(student => {*/}
+                                {/*return {*/}
+                                    {/*label: student.upi,*/}
+                                    {/*value: student.upi*/}
+                                {/*}*/}
+                            {/*})*/}
+                            {/*return  <div className="form-group row">*/}
+                                {/*<label className="col-sm-3 col-form-label">Student UPI</label>*/}
+                                {/*<div className="col-sm-9 "><Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeUpi}*/}
+                                {/*options={upiOptions}*/}
+                                {/*placeholder="Search Student UPI"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.upi}*/}
 
-                            />
-                                </div>
-                            </div>
-                        }
-                        else if (loading) {
-                            return <p>Loading…</p>
-                        }
-                        return <p>Loading failed.</p>
-                    }
-                    }
-                </Query>
+                            {/*/>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*}*/}
+                        {/*else if (loading) {*/}
+                            {/*return <p>Loading…</p>*/}
+                        {/*}*/}
+                        {/*return <p>Loading failed.</p>*/}
+                    {/*}*/}
+                    {/*}*/}
+                {/*</Query>*/}
+                <TextFieldGroup
+                    label="Student UPI"
+                    type="text"
+                    name="upi"
+                    value={this.state.upi}
+                    onChange={this.onChange}
+                />
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">Math</label>
                     <div className="col-sm-9 ">

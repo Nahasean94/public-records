@@ -723,4 +723,8 @@ contract PublicRecords {
         }
         return false;
     }
+
+//    function addDrivingLicenses(DrivingLicense[] drivingLicenses) public {
+//
+//    }
 }

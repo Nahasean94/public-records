@@ -24,7 +24,7 @@ class KCPE extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            upi: '',
+            upi: 'JKK',
             math: '',
             english: '',
             kiswahili: '',
@@ -73,7 +73,7 @@ class KCPE extends React.Component {
 
                 publicRecords.deployed().then((instance) => {
                     publicRecordsInstance = instance
-                    return publicRecordsInstance.addUndergraduateRecord(this.state.upi, this.state.english, this.state.kiswahili, this.state.math,this.state.science,this.state.social_studies,this.state.date,this.state.institution,{from: coinbase})
+                    return publicRecordsInstance.addUndergraduateRecord(this.state.upi, this.state.english.value, this.state.kiswahili.value, this.state.math.value,this.state.science.value,this.state.social_studies.value,this.state.date,this.state.institution.value,{from: coinbase})
                 }).then((result) => {
                     console.log(result)
                 })
@@ -157,41 +157,48 @@ class KCPE extends React.Component {
         }
         return (
             <form onSubmit={this.onSubmit}>
-                <Query
-                    loadOnMount
-                    loadOnReset
-                    fetchOptionsOverride={fetchOptionsOverride}
-                    variables={{education: 'primary'}}
-                    query={students}
-                >
-                    {({loading, data}) => {
-                        if (data) {
-                            upiOptions = data.students.map(student => {
-                                return {
-                                    label: student.upi,
-                                    value: student.upi
-                                }
-                            })
-                            return <div className="form-group row">
-                                <label className="col-sm-3 col-form-label">Student UPI</label>
-                                <div className="col-sm-9 "><Select
-                                    closeOnSelect={true}
-                                    onChange={this.onChangeUpi}
-                                    options={upiOptions}
-                                    placeholder="Search Student UPI"
-                                    removeSelected={true}
-                                    value={this.state.upi}
-                                />
-                                </div>
-                            </div>
-                        }
-                        else if (loading) {
-                            return <p>Loading…</p>
-                        }
-                        return <p>Loading failed.</p>
-                    }
-                    }
-                </Query>
+                {/*<Query*/}
+                    {/*loadOnMount*/}
+                    {/*loadOnReset*/}
+                    {/*fetchOptionsOverride={fetchOptionsOverride}*/}
+                    {/*variables={{education: 'primary'}}*/}
+                    {/*query={students}*/}
+                {/*>*/}
+                    {/*{({loading, data}) => {*/}
+                        {/*if (data) {*/}
+                            {/*upiOptions = data.students.map(student => {*/}
+                                {/*return {*/}
+                                    {/*label: student.upi,*/}
+                                    {/*value: student.upi*/}
+                                {/*}*/}
+                            {/*})*/}
+                            {/*return <div className="form-group row">*/}
+                                {/*<label className="col-sm-3 col-form-label">Student UPI</label>*/}
+                                {/*<div className="col-sm-9 "><Select*/}
+                                    {/*closeOnSelect={true}*/}
+                                    {/*onChange={this.onChangeUpi}*/}
+                                    {/*options={upiOptions}*/}
+                                    {/*placeholder="Search Student UPI"*/}
+                                    {/*removeSelected={true}*/}
+                                    {/*value={this.state.upi}*/}
+                                {/*/>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*}*/}
+                        {/*else if (loading) {*/}
+                            {/*return <p>Loading…</p>*/}
+                        {/*}*/}
+                        {/*return <p>Loading failed.</p>*/}
+                    {/*}*/}
+                    {/*}*/}
+                {/*</Query>*/}
+                <TextFieldGroup
+                    label="Student UPI"
+                    type="text"
+                    name="upi"
+                    value={this.state.upi}
+                    onChange={this.onChange}
+                />
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">Math</label>
                     <div className="col-sm-9 ">

@@ -90,7 +90,9 @@ console.log(vehicle_classes)
 
             publicRecords.deployed().then((instance) => {
                 publicRecordsInstance = instance
+
                 return publicRecordsInstance.addDrivingLicense(this.state.nationalID,this.state.dob,vehicle_classes,this.state.names,this.state.postal_address,this.state.expiry,this.state.date_of_issue, {from: coinbase})
+
             }).then((result) => {
                console.log(result)
             })
