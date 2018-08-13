@@ -5,6 +5,10 @@ import {addSecondarySchoolRecord, students} from "../../../shared/queries"
 import Select from 'react-select'
 import {Query} from 'graphql-react'
 import TextFieldGroup from "../../shared/TextFieldsGroup"
+import getWeb3 from "../../../utils/getWeb3"
+import PublicRecords from "../../../blockchain/build/contracts/PublicRecords"
+
+const contract = require('truffle-contract')
 let marksOptions = () => {
     let marks = []
     for (let i = 0; i <= 100; i++) {
@@ -32,7 +36,8 @@ class KCSE extends React.Component {
             religion: '',
             business: '',
             year:'',
-            message: ''
+            message: '',
+            institution:'MKI'
         }
         this.onChangeMath=this.onChangeMath.bind(this)
         this.onChangeChemistry=this.onChangeChemistry.bind(this)
@@ -50,52 +55,82 @@ class KCSE extends React.Component {
     }
 
 
+    componentWillMount() {
+        // Get network provider and web3 instance.
+        getWeb3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+            })
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
+
+
+
     onSubmit(e) {
         e.preventDefault()
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
+
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            publicRecords.deployed().then((instance) => {
+                publicRecordsInstance = instance
+                return publicRecordsInstance.addSecondarySchoolRecord(this.state.upi, this.state.english, this.state.kiswahili, this.state.math,this.state.biology,this.state.chemistry,this.state.physics,this.state.history,this.state.geography,this.state.religion,this.state.business,this.state.date,this.state.institution,{from: coinbase})
+            }).then((result) => {
+                console.log(result)
+            })
+        })
             this.setState({errors: {}, isLoading: true})
-            this.props.graphql
-                .query({
-                    fetchOptionsOverride: fetchOptionsOverride,
-                    resetOnLoad: true,
-                    operation: {
-                        variables: {
-                            upi: this.state.upi.value,
-                            math: this.state.math.value,
-                            english: this.state.english.value,
-                            kiswahili: this.state.kiswahili.value,
-                            chemistry: this.state.chemistry.value,
-                            physics: this.state.physics.value,
-                            biology: this.state.biology.value,
-                            geography: this.state.geography.value,
-                            religion: this.state.religion.value,
-                            history: this.state.history.value,
-                            business: this.state.business.value,
-                            year: this.state.year,
-                        },
-                        query: addSecondarySchoolRecord
-                    }
-                })
-                .request.then(({data}) => {
-                    if (data) {
-                        this.setState({
-                            math: '',
-                            english: '',
-                            kiswahili: '',
-                            chemistry: '',
-                            biology: '',
-                            physics: '',
-                            geography: '',
-                            history: '',
-                            religion: '',
-                            business: '',
-                            year:'',
-                            message: data
-                                ? `New KCSE record added.`
-                                : `An error occurred while adding record.`
-                        })
-                    }
-                }
-            )
+            // this.props.graphql
+            //     .query({
+            //         fetchOptionsOverride: fetchOptionsOverride,
+            //         resetOnLoad: true,
+            //         operation: {
+            //             variables: {
+            //                 upi: this.state.upi.value,
+            //                 math: this.state.math.value,
+            //                 english: this.state.english.value,
+            //                 kiswahili: this.state.kiswahili.value,
+            //                 chemistry: this.state.chemistry.value,
+            //                 physics: this.state.physics.value,
+            //                 biology: this.state.biology.value,
+            //                 geography: this.state.geography.value,
+            //                 religion: this.state.religion.value,
+            //                 history: this.state.history.value,
+            //                 business: this.state.business.value,
+            //                 year: this.state.year,
+            //             },
+            //             query: addSecondarySchoolRecord
+            //         }
+            //     })
+            //     .request.then(({data}) => {
+            //         if (data) {
+            //             this.setState({
+            //                 math: '',
+            //                 english: '',
+            //                 kiswahili: '',
+            //                 chemistry: '',
+            //                 biology: '',
+            //                 physics: '',
+            //                 geography: '',
+            //                 history: '',
+            //                 religion: '',
+            //                 business: '',
+            //                 year:'',
+            //                 message: data
+            //                     ? `New KCSE record added.`
+            //                     : `An error occurred while adding record.`
+            //             })
+            //         }
+            //     }
+            // )
     }
 
 
@@ -145,7 +180,7 @@ class KCSE extends React.Component {
     render() {
         const {loading, message} = this.state
         if (loading) {
-            return <p>Creating account…</p>
+            return <p>Adding KCSE Record…</p>
         }
         if (message) {
             return <div className="alert alert-info">{message}</div>
