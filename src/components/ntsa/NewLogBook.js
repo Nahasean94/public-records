@@ -2,6 +2,10 @@ import React from 'react'
 import {isEmpty} from 'lodash'
 import Select from 'react-select'
 import TextFieldGroup from "../../shared/TextFieldsGroup"
+import getWeb3 from "../../utils/getWeb3"
+import PublicRecords from "../../blockchain/build/contracts/PublicRecords"
+
+const contract = require('truffle-contract')
 
 
 let makeOptions = [
@@ -239,16 +243,122 @@ class NewLogBook extends React.Component {
 
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
+        this.onChangeMakeOptions = this.onChangeMakeOptions.bind(this)
+        this.onChangeTypeOptions = this.onChangeTypeOptions.bind(this)
+        this.onChangeBodyOptions = this.onChangeBodyOptions.bind(this)
+        this.onChangeModelOptions = this.onChangeModelOptions.bind(this)
+        this.onChangeFuelOptions = this.onChangeFuelOptions.bind(this)
+        this.onChangeYearOptions = this.onChangeYearOptions.bind(this)
+        this.onChangeRatingOptions = this.onChangeRatingOptions.bind(this)
+        this.onChangeColorOptions = this.onChangeColorOptions.bind(this)
+        this.onChangeDutyOptions = this.onChangeDutyOptions.bind(this)
+        this.onChangePassengersOptions = this.onChangePassengersOptions.bind(this)
+        this.onChangeTaxOptions = this.onChangeTaxOptions.bind(this)
+        this.onChangePreviousCountryOptions = this.onChangePreviousCountryOptions.bind(this)
+        this.onChangeAxleOptions = this.onChangeAxleOptions.bind(this)
 
     }
+
+    componentWillMount() {
+        // Get network provider and web3 instance.
+        getWeb3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+            })
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
+
     onSubmit(e) {
         e.preventDefault()
-        // if (this.isValid()) {
-        this.setState({errors: {}, isLoading: true})
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
+
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            publicRecords.deployed().then(async (instance) => {
+                publicRecordsInstance = instance
+                // return publicRecordsInstance.addLogbookA(this.state.entry_number, this.state.car_number, this.state.chassis, this.state.make.value, this.state.model.value, this.state.type.value, {from: coinbase})
+// let car_info=[]
+//                 console.log(car_info)
+                return publicRecordsInstance.addLogbook( this.state.car_number, this.state.make.value, this.state.manufacture_year.value, this.state.color.value, this.state.registration_date, this.state.kra_pin, this.state.full_names, {from: coinbase})
+                // return await promiseAll(
+                //     publicRecordsInstance.addLogbookA(this.state.entry_number, this.state.car_number, this.state.chassis, this.state.make.value, this.state.model.value, this.state.type.value, {from: coinbase}),
+                //     publicRecordsInstance.addLogbookB(this.state.car_number, this.state.body.value, this.state.fuel.value, this.state.manufacture_year.value, this.state.rating.value, this.state.engine_number, this.state.color.value, {from: coinbase}),
+                //     publicRecordsInstance.addLogbookC(this.state.car_number, this.state.registration_date.value, this.state.duty.value, this.state.passengers.value, this.state.tare_weight, this.state.tax_class.value, this.state.previous_reg_country.value, {from: coinbase})
+                //     , publicRecordsInstance.addLogbookOwner(this.state.car_number, this.state.kra_pin, this.state.full_names, this.state.postal_address, {from: coinbase}))
+            }).then(async (result) => {
+                // return await promiseAll(
+                //     publicRecordsInstance.addLogbookA(this.state.entry_number, this.state.car_number, this.state.chassis, this.state.make.value, this.state.model.value, this.state.type.value, {from: coinbase}),
+                //     publicRecordsInstance.addLogbookB(this.state.car_number, this.state.body.value, this.state.fuel.value, this.state.manufacture_year.value, this.state.rating.value, this.state.engine_number, this.state.color.value, {from: coinbase}),
+                //     publicRecordsInstance.addLogbookC(this.state.car_number, this.state.registration_date.value, this.state.duty.value, this.state.passengers.value, this.state.tare_weight, this.state.tax_class.value, this.state.previous_reg_country.value, {from: coinbase})
+                //     , publicRecordsInstance.addLogbookOwner(this.state.car_number, this.state.kra_pin, this.state.full_names, this.state.postal_address, {from: coinbase}))
+            })
+        })
+
     }
+
     onChange(e) {
         this.setState({[e.target.name]: e.target.value})
 
+    }
+
+    onChangeMakeOptions(make) {
+        this.setState({make})
+    }
+
+    onChangeTypeOptions(type) {
+        this.setState({type})
+    }
+
+    onChangeBodyOptions(body) {
+        this.setState({body})
+    }
+
+    onChangeModelOptions(model) {
+        this.setState({model})
+    }
+
+    onChangeFuelOptions(fuel) {
+        this.setState({fuel})
+    }
+
+    onChangeYearOptions(manufacture_year) {
+        this.setState({manufacture_year})
+    }
+
+    onChangeRatingOptions(rating) {
+        this.setState({rating})
+    }
+
+    onChangeColorOptions(color) {
+        this.setState({color})
+    }
+
+    onChangeDutyOptions(duty) {
+        this.setState({duty})
+    }
+
+    onChangePassengersOptions(passengers) {
+        this.setState({passengers})
+    }
+
+    onChangeTaxOptions(tax_class) {
+        this.setState({tax_class})
+    }
+
+    onChangePreviousCountryOptions(previous_reg_country) {
+        this.setState({previous_reg_country})
+    }
+
+    onChangeAxleOptions(axles) {
+        this.setState({axles})
     }
 
     render() {
@@ -263,14 +373,14 @@ class NewLogBook extends React.Component {
             <div className="col-sm-8 offset-sm-2">
 
                 <form onSubmit={this.onSubmit}>
-                    <TextFieldGroup
-                        label="Entry number"
-                        type="text"
-                        name="entry_number"
-                        value={this.state.entry_number}
-                        onChange={this.onChange}
+                    {/*<TextFieldGroup*/}
+                        {/*label="Entry number"*/}
+                        {/*type="text"*/}
+                        {/*name="entry_number"*/}
+                        {/*value={this.state.entry_number}*/}
+                        {/*onChange={this.onChange}*/}
 
-                    />
+                    {/*/>*/}
                     <TextFieldGroup
                         label="Car number"
                         type="text"
@@ -279,85 +389,85 @@ class NewLogBook extends React.Component {
                         onChange={this.onChange}
 
                     />
-                    <TextFieldGroup
-                        label="Chassis"
-                        type="text"
-                        name="chassis"
-                        value={this.state.chassis}
-                        onChange={this.onChange}
+                    {/*<TextFieldGroup*/}
+                        {/*label="Chassis"*/}
+                        {/*type="text"*/}
+                        {/*name="chassis"*/}
+                        {/*value={this.state.chassis}*/}
+                        {/*onChange={this.onChange}*/}
 
-                    />
+                    {/*/>*/}
                     <div className="form-group row">
                         <label className="col-sm-3 col-form-label">Make</label>
                         <div className="col-sm-9 ">
                             <Select
                                 closeOnSelect={true}
-                                onChange={this.onChange}
+                                onChange={this.onChangeMakeOptions}
                                 options={makeOptions}
                                 placeholder="Search car make"
                                 removeSelected={true}
-                                value={this.state.social_studies}
+                                value={this.state.make}
                             />
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Vehicle model</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={modelOptions}
-                                placeholder="Search vehicle model"
-                                removeSelected={true}
-                                value={this.state.social_studies}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Type</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={typeOptions}
-                                placeholder="Search Types"
-                                removeSelected={true}
-                                value={this.state.type}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Body</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={bodyOptions}
-                                placeholder="Search body type"
-                                removeSelected={true}
-                                value={this.state.body}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Fuel</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={fuelOptions}
-                                placeholder="Search fuel"
-                                removeSelected={true}
-                                value={this.state.fuel}
-                            />
-                        </div>
-                    </div>
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Vehicle model</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeModelOptions}*/}
+                                {/*options={modelOptions}*/}
+                                {/*placeholder="Search vehicle model"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.model}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Type</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeTypeOptions}*/}
+                                {/*options={typeOptions}*/}
+                                {/*placeholder="Search Types"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.type}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Body</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeBodyOptions}*/}
+                                {/*options={bodyOptions}*/}
+                                {/*placeholder="Search body type"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.body}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Fuel</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeFuelOptions}*/}
+                                {/*options={fuelOptions}*/}
+                                {/*placeholder="Search fuel"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.fuel}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
                     <div className="form-group row">
                         <label className="col-sm-3 col-form-label">Year of manufacture</label>
                         <div className="col-sm-9 ">
                             <Select
                                 closeOnSelect={true}
-                                onChange={this.onChange}
+                                onChange={this.onChangeYearOptions}
                                 options={yearOptions()}
                                 placeholder="Search year"
                                 removeSelected={true}
@@ -365,34 +475,34 @@ class NewLogBook extends React.Component {
                             />
                         </div>
                     </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Rating</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={ratingOptions}
-                                placeholder="Search rating"
-                                removeSelected={true}
-                                value={this.state.rating}
-                            />
-                        </div>
-                    </div>
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Rating</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeRatingOptions}*/}
+                                {/*options={ratingOptions}*/}
+                                {/*placeholder="Search rating"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.rating}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
 
-                    <TextFieldGroup
-                        label="Engine number"
-                        type="text"
-                        name="engine_number"
-                        value={this.state.engine_number}
-                        onChange={this.onChange}
+                    {/*<TextFieldGroup*/}
+                        {/*label="Engine number"*/}
+                        {/*type="text"*/}
+                        {/*name="engine_number"*/}
+                        {/*value={this.state.engine_number}*/}
+                        {/*onChange={this.onChange}*/}
 
-                    />
+                    {/*/>*/}
                     <div className="form-group row">
                         <label className="col-sm-3 col-form-label">Color</label>
                         <div className="col-sm-9 ">
                             <Select
                                 closeOnSelect={true}
-                                onChange={this.onChange}
+                                onChange={this.onChangeColorOptions}
                                 options={colorOptions}
                                 placeholder="Search color"
                                 removeSelected={true}
@@ -407,79 +517,79 @@ class NewLogBook extends React.Component {
                         value={this.state.registration_date}
                         onChange={this.onChange}
                     />
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Duty</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={dutyOptions}
-                                placeholder="Search duty"
-                                removeSelected={true}
-                                value={this.state.duty}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Passengers</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={passengersOptions()}
-                                placeholder="Search number of passengers"
-                                removeSelected={true}
-                                value={this.state.passengers}
-                            />
-                        </div>
-                    </div>
-                    <TextFieldGroup
-                        label="Tare weight"
-                        type="number"
-                        name="tare_weight"
-                        value={this.state.tare_weight}
-                        onChange={this.onChange}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Duty</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeDutyOptions}*/}
+                                {/*options={dutyOptions}*/}
+                                {/*placeholder="Search duty"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.duty}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Passengers</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangePassengersOptions}*/}
+                                {/*options={passengersOptions()}*/}
+                                {/*placeholder="Search number of passengers"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.passengers}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<TextFieldGroup*/}
+                        {/*label="Tare weight"*/}
+                        {/*type="number"*/}
+                        {/*name="tare_weight"*/}
+                        {/*value={this.state.tare_weight}*/}
+                        {/*onChange={this.onChange}*/}
 
-                    />
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Tax class</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={taxOptions}
-                                placeholder="Search tax class"
-                                removeSelected={true}
-                                value={this.state.tax_class}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Axles</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={axleOptions}
-                                placeholder="Search number or axles"
-                                removeSelected={true}
-                                value={this.state.rating}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-3 col-form-label">Previous country of registration</label>
-                        <div className="col-sm-9 ">
-                            <Select
-                                closeOnSelect={true}
-                                onChange={this.onChange}
-                                options={previousCountryOptions}
-                                placeholder="Search country"
-                                removeSelected={true}
-                                value={this.state.previous_reg_country}
-                            />
-                        </div>
-                    </div>
+                    {/*/>*/}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Tax class</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeTaxOptions}*/}
+                                {/*options={taxOptions}*/}
+                                {/*placeholder="Search tax class"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.tax_class}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Axles</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangeAxleOptions}*/}
+                                {/*options={axleOptions}*/}
+                                {/*placeholder="Search number or axles"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.axles}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="form-group row">*/}
+                        {/*<label className="col-sm-3 col-form-label">Previous country of registration</label>*/}
+                        {/*<div className="col-sm-9 ">*/}
+                            {/*<Select*/}
+                                {/*closeOnSelect={true}*/}
+                                {/*onChange={this.onChangePreviousCountryOptions}*/}
+                                {/*options={previousCountryOptions}*/}
+                                {/*placeholder="Search country"*/}
+                                {/*removeSelected={true}*/}
+                                {/*value={this.state.previous_reg_country}*/}
+                            {/*/>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
                     <hr/>
                     <h4>Vehicle owner information</h4>
                     <TextFieldGroup
@@ -498,14 +608,14 @@ class NewLogBook extends React.Component {
                         onChange={this.onChange}
 
                     />
-                    <TextFieldGroup
-                        label="Postal Address"
-                        type="text"
-                        name="postal_address"
-                        value={this.state.postal_address}
-                        onChange={this.onChange}
+                    {/*<TextFieldGroup*/}
+                        {/*label="Postal Address"*/}
+                        {/*type="text"*/}
+                        {/*name="postal_address"*/}
+                        {/*value={this.state.postal_address}*/}
+                        {/*onChange={this.onChange}*/}
 
-                    />
+                    {/*/>*/}
                     <div className="form-group row">
                         <div className="col-sm-9 offset-3">
                             <button
