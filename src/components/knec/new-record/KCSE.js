@@ -19,7 +19,48 @@ let marksOptions = () => {
     }
     return marks
 }
-let upiOptions
+let yearOptions = () => {
+    let marks = []
+    for (let i = 1987; i <= 2017; i++) {
+        marks.push({
+            label: i,
+            value: i
+        })
+    }
+    return marks
+}
+let upiOptions = [{
+    label: "ABC",
+    value: "ABC"
+}, {
+    label: "BDD",
+    value: "BDD"
+}, {
+    label: "JKI",
+    value: "JKI"
+}, {
+    label: "ZXY",
+    value: "ZXY"
+}, {
+    label: "WFY",
+    value: "WFY"
+}]
+let schoolUpiOptions = [{
+    label: "SOL",
+    value: "SOL"
+}, {
+    label: "DHY",
+    value: "DHY"
+}, {
+    label: "FKJ",
+    value: "FKJ"
+}, {
+    label: "WXC",
+    value: "WXC"
+}, {
+    label: "ASD",
+    value: "ASD"
+}]
 class KCSE extends React.Component {
     constructor(props) {
         super(props)
@@ -37,7 +78,7 @@ class KCSE extends React.Component {
             business: 0,
             year:'',
             message: '',
-            institution:'MKI'
+            institution:''
         }
         this.onChangeMath=this.onChangeMath.bind(this)
         this.onChangeChemistry=this.onChangeChemistry.bind(this)
@@ -52,9 +93,18 @@ class KCSE extends React.Component {
         this.onChangeUpi=this.onChangeUpi.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
         this.onChange = this.onChange.bind(this)
+        this.onChangeYear = this.onChangeYear.bind(this)
+        this.onChangeSchoolUpi = this.onChangeSchoolUpi.bind(this)
+
     }
 
+    onChangeYear(year) {
+        this.setState({year})
+    }
 
+    onChangeSchoolUpi(institution) {
+        this.setState({institution})
+    }
     componentWillMount() {
         // Get network provider and web3 instance.
         getWeb3
@@ -69,8 +119,8 @@ class KCSE extends React.Component {
     }
 
 
-
     onSubmit(e) {
+
         e.preventDefault()
         const publicRecords = contract(PublicRecords)
         publicRecords.setProvider(this.state.web3.currentProvider)
@@ -82,12 +132,12 @@ class KCSE extends React.Component {
             publicRecords.deployed().then((instance) => {
                 publicRecordsInstance = instance
                 console.log(this.state)
-                return publicRecordsInstance.addSecondarySchoolRecord(this.state.upi, this.state.english.value, this.state.kiswahili.value, this.state.math.value,this.state.biology.value,this.state.chemistry.value,this.state.physics.value,this.state.history.value,this.state.geography.value,this.state.religion.value,this.state.business.value,this.state.date,this.state.institution,{from: coinbase})
+                return publicRecordsInstance.addSecondarySchoolRecord(this.state.upi.value, this.state.english.value, this.state.kiswahili.value, this.state.math.value,this.state.biology.value,this.state.chemistry.value,this.state.physics.value,this.state.history.value,this.state.geography.value,this.state.religion.value,this.state.business.value,this.state.year.value,this.state.institution.value,{from: coinbase})
             }).then((result) => {
-                console.log(result)
+            this.setState({errors: {}, isLoading: true})
+            this.setState({  message: 'New KCSE record added.'})
             })
         })
-            this.setState({errors: {}, isLoading: true})
             // this.props.graphql
             //     .query({
             //         fetchOptionsOverride: fetchOptionsOverride,
@@ -171,7 +221,6 @@ class KCSE extends React.Component {
     }
     onChangeUpi(upi) {
         this.setState({upi})
-
     }
     onChange(e) {
         this.setState({[e.target.name]:e.target.value})
@@ -188,6 +237,7 @@ class KCSE extends React.Component {
         }
         return (
             <form onSubmit={this.onSubmit}>
+                {message ? <div className="alert alert-info">{message}</div> : ''}
                 {/*<Query*/}
                     {/*loadOnMount*/}
                     {/*loadOnReset*/}
@@ -224,13 +274,19 @@ class KCSE extends React.Component {
                     {/*}*/}
                     {/*}*/}
                 {/*</Query>*/}
-                <TextFieldGroup
-                    label="Student UPI"
-                    type="text"
-                    name="upi"
-                    value={this.state.upi}
-                    onChange={this.onChange}
-                />
+                <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Student UPI</label>
+                    <div className="col-sm-9 ">
+                        <Select
+                            closeOnSelect={true}
+                            onChange={this.onChangeUpi}
+                            options={upiOptions}
+                            placeholder="Search Upi"
+                            removeSelected={true}
+                            value={this.state.upi}
+                        />
+                    </div>
+                </div>
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">Math</label>
                     <div className="col-sm-9 ">
@@ -371,14 +427,32 @@ class KCSE extends React.Component {
                         />
                     </div>
                 </div>
-                <TextFieldGroup
-                    label="Date"
-                    type="date"
-                    name="date"
-                    value={this.state.date}
-                    onChange={this.onChange}
-
-                />
+                <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Year</label>
+                    <div className="col-sm-9 ">
+                        <Select
+                            closeOnSelect={true}
+                            onChange={this.onChangeYear}
+                            options={yearOptions()}
+                            placeholder="Search Year"
+                            removeSelected={true}
+                            value={this.state.year}
+                        />
+                    </div>
+                </div>
+                <div className="form-group row">
+                    <label className="col-sm-3 col-form-label">Institution UPI</label>
+                    <div className="col-sm-9 ">
+                        <Select
+                            closeOnSelect={true}
+                            onChange={this.onChangeSchoolUpi}
+                            options={schoolUpiOptions}
+                            placeholder="Search UPI"
+                            removeSelected={true}
+                            value={this.state.institution}
+                        />
+                    </div>
+                </div>
 
                 <div className="form-group row">
                     <div className="col-sm-9 offset-3">
