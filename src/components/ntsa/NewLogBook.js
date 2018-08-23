@@ -469,7 +469,9 @@ class NewLogBook extends React.Component {
                                 value={this.state.car_number}
                                 onChange={this.onChange}
                                 error={errors.car_number}
+                                small="Use the format KCA 444J"
                             />
+
                             {/*<TextFieldGroup*/}
                             {/*label="Chassis"*/}
                             {/*type="text"*/}
@@ -684,6 +686,7 @@ class NewLogBook extends React.Component {
                                 value={this.state.kra_pin}
                                 onChange={this.onChange}
                                 error={errors.kra_pin}
+                                small={"Use the format A52555DJN5K"}
 
                             />
                             <TextFieldGroup
@@ -693,6 +696,7 @@ class NewLogBook extends React.Component {
                                 value={this.state.full_names}
                                 onChange={this.onChange}
                                 error={errors.full_names}
+                                small={"Use the format John Doe"}
 
                             />
                             {/*<TextFieldGroup*/}

@@ -118,9 +118,20 @@ class Undergraduate extends React.Component {
     validateInfo(data) {
         let errors = {}
 
-        if (!data.make.value) {
-            errors.make = 'This field is required'
+        if (!data.upi.value) {
+            errors.upi = 'This field is required'
         }
+        if (!data.course.value) {
+            errors.course = 'This field is required'
+        }
+        if (!data.score.value) {
+            errors.score = 'This field is required'
+        }
+        if (!data.year.value) {
+            errors.year = 'This field is required'
+        }
+
+
 
 
         return {
@@ -150,6 +161,11 @@ class Undergraduate extends React.Component {
 
                 publicRecords.deployed().then((instance) => {
                     publicRecordsInstance = instance
+                    console.log(this.state.upi.value)
+                    console.log(this.state.course.value)
+                    console.log(this.state.score.value)
+                    console.log(this.state.year.value)
+                    console.log(this.state.institution)
                     return publicRecordsInstance.addUndergraduateRecord(this.state.upi.value, this.state.course.value, this.state.score.value, this.state.year.value, this.state.institution, {from: coinbase})
                 }).then((result) => {
                     console.log(result)
@@ -177,7 +193,7 @@ class Undergraduate extends React.Component {
     }
 
     render() {
-        const {loading, message} = this.state
+        const {loading, message,errors} = this.state
         if (loading) {
             return <p>Adding record…</p>
         }
@@ -203,6 +219,7 @@ class Undergraduate extends React.Component {
                                         removeSelected={true}
                                         value={this.state.upi}
                                     />
+                                    {errors && errors.upi && <div className="alert alert-danger">{errors.upi}</div>}
                                 </div>
                             </div>
                             <div className="form-group row">
@@ -216,6 +233,7 @@ class Undergraduate extends React.Component {
                                         removeSelected={true}
                                         value={this.state.year}
                                     />
+                                    {errors && errors.year && <div className="alert alert-danger">{errors.year}</div>}
                                 </div>
                             </div>
                             <div className="form-group row">
@@ -229,6 +247,7 @@ class Undergraduate extends React.Component {
                                         removeSelected={true}
                                         value={this.state.course}
                                     />
+                                    {errors && errors.course && <div className="alert alert-danger">{errors.course}</div>}
                                 </div>
                             </div>
 
@@ -243,6 +262,7 @@ class Undergraduate extends React.Component {
                                         removeSelected={true}
                                         value={this.state.score}
                                     />
+                                    {errors && errors.score && <div className="alert alert-danger">{errors.score}</div>}
                                 </div>
                             </div>
                             <div className="form-group row">

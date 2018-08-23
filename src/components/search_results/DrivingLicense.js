@@ -2,6 +2,7 @@ import React from 'react'
 
 class DrivingLicense extends React.Component {
     render() {
+        console.log(this.props.result)
         return (
             <table className="table table-hover table-borderless">
                 <tbody>

@@ -9,8 +9,8 @@ class LogBook extends React.Component {
                     <th scope="row">Car Number</th>
                     <td>{this.props.web3Instance.utils.toAscii(this.props.result[0])}</td>
                 </tr>
+                <th scope="row">Make</th>
                 <tr>
-                    <th scope="row">Make</th>
                     <td>{this.props.web3Instance.utils.toAscii(this.props.result[1])}</td>
                 </tr>
                 <tr>

@@ -4,6 +4,7 @@ import TextFieldGroup from "../../shared/TextFieldsGroup"
 import Select from 'react-select'
 import PublicRecords from '../../../blockchain/build/contracts/PublicRecords.json'
 import getWeb3 from '../../../utils/getWeb3'
+import validator from "validator"
 
 const contract = require('truffle-contract')
 
@@ -53,6 +54,7 @@ class NewDrivingLicense extends React.Component {
             date_of_issue: '',
             nationalID: '',
             web3: null,
+            errors:{}
         }
 
         this.onSubmit = this.onSubmit.bind(this)
@@ -72,9 +74,84 @@ class NewDrivingLicense extends React.Component {
                 console.log('Error finding web3.')
             })
     }
+    validateInfo(data){
+        let errors={}
+    if (validator.isEmpty(data.dob)) {
+        errors.dob = 'This field is required'
+    }
+    if (validator.isEmpty(data.date_of_issue)) {
+        errors.date_of_issue = 'This field is required'
+    }
+    if (validator.isEmpty(data.names)) {
+        errors.names = 'This field is required'
+    }
+    if (validator.isEmpty(data.expiry)) {
+        errors.expiry = 'This field is required'
+    }
+    if (validator.isEmpty(data.postal_address)) {
+        errors.postal_address = 'This field is required'
+    }
+    // if (!data.postal_address) {
+    //     errors.postal_address = 'This field is required'
+    // }
+    if (!data.nationalID) {
+        errors.nationalID = 'This field is required'
+    }
+    if (data.vehicle_classes.length<1) {
+        errors.vehicle_classes = 'This field is required'
+    }
+
+    if (data.nationalID.length > 8 || data.nationalID.length < 8) {
+        errors.car_number = 'National ID must be between 8 numbers'
+    }
+    if (!data.names.match(/[\sa-zA-Z0-9]/g)) {
+        errors.names = "Full names can only contain letters and spaces"
+    }
+    if (data.names.split(" ").length < 2) {
+        errors.names = "You must provide at least 2 names"
+    }
+    // if (!data.names.match(/[\sa-zA-Z0-9]/g)) {
+    //     errors.names = "Full names can only contain letters and spaces"
+    // }
+    if (data.names.split(" ").length < 2) {
+        errors.names = "You must provide at least 2 names"
+    }
+
+    if (!data.postal_address.match(/[\sa-zA-Z0-9]/g)) {
+        errors.postal_address = "Postal address should take the format 352 Eldoret"
+    }
+    if (Date.parse(data.dob) > Date.parse(new Date())) {
+        errors.dob = "You cannot be born in the future"
+    }
+    if (Date.parse(data.dob) < Date.parse(new Date(2000))) {
+        errors.dob = "You must be 18 and above"
+    }
+    if (Date.parse(data.date_of_issue)> Date.parse(new Date())) {
+        errors.date_of_issue = "Date of issue cannot be in the future"
+    }
+    if (Date.parse(data.expiry) < Date.parse(new Date())) {
+        errors.expiry = "Expiry date cannot be in the past"
+    }
+
+    return {
+        errors,
+        isValid: isEmpty(errors)
+    }
+}
+
+
+    isInfoValid() {
+        const {errors, isValid} = this.validateInfo(this.state)
+        if (!isValid) {
+            this.setState({errors})
+        }
+        return isValid
+    }
+
 
     onSubmit(e) {
         e.preventDefault()
+        if(this.isInfoValid()){
         let {vehicle_classes} = this.state
         vehicle_classes = vehicle_classes.map(host => {
             return host.value
@@ -97,6 +174,7 @@ console.log(vehicle_classes)
                console.log(result)
             })
         })
+        }
 
     }
 
@@ -111,7 +189,7 @@ console.log(vehicle_classes)
     }
 
     render() {
-        const {loading, message} = this.state
+        const {loading, message,errors} = this.state
         if (loading) {
             return <p>Adding record…</p>
         }
@@ -126,6 +204,7 @@ console.log(vehicle_classes)
                     name="names"
                     value={this.state.names}
                     onChange={this.onChange}
+                    error={errors.names}
                 />
                 <TextFieldGroup
                     label="Date of birth"
@@ -133,6 +212,7 @@ console.log(vehicle_classes)
                     name="dob"
                     value={this.state.dob}
                     onChange={this.onChange}
+                    error={errors.dob}
                 />
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">Vehicle classes licensed</label>
@@ -146,14 +226,16 @@ console.log(vehicle_classes)
                             value={this.state.vehicle_classes}
                             multi={true}
                         />
+                        {errors && errors.vehicle_classes &&<div className="alert alert-danger">{errors.vehicle_classes}</div>}
                     </div>
                 </div>
                 <TextFieldGroup
-                    label="Postal Address"
+                    label="PO Box"
                     type="text"
                     name="postal_address"
                     value={this.state.postal_address}
                     onChange={this.onChange}
+                    error={errors.postal_address}
                 />
                 <TextFieldGroup
                     label="Date issued"
@@ -161,6 +243,8 @@ console.log(vehicle_classes)
                     name="date_of_issue"
                     value={this.state.date_of_issue}
                     onChange={this.onChange}
+                    error={errors.date_of_issue}
+
                 />
                 <TextFieldGroup
                     label="National ID"
@@ -168,6 +252,7 @@ console.log(vehicle_classes)
                     name="nationalID"
                     value={this.state.nationalID}
                     onChange={this.onChange}
+                    error={errors.nationalID}
                 />
                 <TextFieldGroup
                     label="Date of expiry"
@@ -175,6 +260,7 @@ console.log(vehicle_classes)
                     name="expiry"
                     value={this.state.expiry}
                     onChange={this.onChange}
+                    error={errors.expiry}
                 />
 
                 <div className="form-group row">

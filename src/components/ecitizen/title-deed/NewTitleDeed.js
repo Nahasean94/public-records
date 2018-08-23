@@ -4,6 +4,7 @@ import TextFieldGroup from "../../shared/TextFieldsGroup"
 import Select from 'react-select'
 import getWeb3 from "../../../utils/getWeb3"
 import PublicRecords from "../../../blockchain/build/contracts/PublicRecords"
+import validator from "validator"
 
 const contract = require('truffle-contract')
 
@@ -35,6 +36,7 @@ class NewTitleDeed extends React.Component {
             registry: '',
             names: '',
             postal_address: '',
+            plot_number: '',
             district: '',
             date: '',
             web3: null,
@@ -46,6 +48,61 @@ class NewTitleDeed extends React.Component {
 
     }
 
+    validateInfo(data) {
+        let errors = {}
+        if (validator.isEmpty(data.title_number)) {
+            errors.title_number = 'This field is required'
+        }
+        if (!data.approximate_area) {
+            errors.approximate_area = 'This field is required'
+        }
+        if (validator.isEmpty(data.registry)) {
+            errors.registry = 'This field is required'
+        }
+        if (validator.isEmpty(data.full_names)) {
+            errors.full_names = 'This field is required'
+        }
+        if (validator.isEmpty(data.postal_address)) {
+            errors.postal_address = 'This field is required'
+        }
+        if (!data.postal_address.match(/[\sa-zA-Z0-9]/g)) {
+            errors.postal_address = "Postal address should take the format 352 Eldoret"
+        }
+
+        if (!data.full_names.match(/[\sa-zA-Z0-9]/g)) {
+            errors.full_names = "Full names can only contain letters and spaces"
+        }
+        if (data.full_names.split(" ").length < 2) {
+            errors.full_names = "You must provide at least 2 names"
+        }
+        if (data.kra_pin.length < 11 || data.kra_pin.length > 11) {
+            errors.kra_pin = "KRA pin must be 11 characters"
+        }
+
+        if (Date.parse(data.date) > Date.parse(new Date())) {
+            errors.date = "Date cannot be in the future"
+        }
+        if (data.title_number) {
+            const title_number = data.title_number.split("-")
+            if (!title_number[0].match(/[A-Z]/g) || !title_number[1].match(/[A-Z]/g) || !title_number[2].match(/[0-9]/g)) {
+
+            }
+        }
+
+        return {
+            errors,
+            isValid: isEmpty(errors)
+        }
+    }
+
+
+    isInfoValid() {
+        const {errors, isValid} = this.validateInfo(this.state)
+        if (!isValid) {
+            this.setState({errors})
+        }
+        return isValid
+    }
 
     componentWillMount() {
         // Get network provider and web3 instance.
@@ -104,10 +161,11 @@ class NewTitleDeed extends React.Component {
             <form onSubmit={this.onSubmit}>
                 <TextFieldGroup
                     label="Title Number"
-                    type="number"
+                    type="text"
                     name="title_number"
                     value={this.state.title_number}
                     onChange={this.onChange}
+                    small={"Use the format AA-BB-11"}
                 />
                 <TextFieldGroup
                     label="Approximate Area(acres)"
@@ -131,11 +189,12 @@ class NewTitleDeed extends React.Component {
                     onChange={this.onChange}
                 />
                 <TextFieldGroup
-                    label="Postal Address"
+                    label="PO Box"
                     type="text"
                     name="postal_address"
                     value={this.state.postal_address}
                     onChange={this.onChange}
+                    small={"Use the format 320 Kesses"}
                 />
                 <div className="form-group row">
                     <label className="col-sm-3 col-form-label">District</label>
