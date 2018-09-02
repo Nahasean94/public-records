@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 
-const TextFieldGroup = ({ name,value, label, error, type, onChange,checkLocationExists,checkIfExists,autoFocus,small}) => {
+const TextFieldGroup = ({ name,value, label, error, type, onChange,checkLocationExists,checkIfExists,autoFocus}) => {
     return (
         <div className="form-group row">
             <label className="col-sm-3 col-form-label" >{label}</label>
@@ -16,7 +16,6 @@ const TextFieldGroup = ({ name,value, label, error, type, onChange,checkLocation
                        autoFocus={autoFocus}
                 />
                 {error && <div className="invalid-feedback">{error}</div>}
-                {small &&<small id="emailHelp" className="form-text text-muted">{small}</small>}
             </div>
         </div>
     )
@@ -31,7 +30,6 @@ TextFieldGroup.propTypes = {
     checkIfExits: PropTypes.func,
     checkLocationExists: PropTypes.func,
     autoFocus:PropTypes.bool,
-    small:PropTypes.string,
 
 }
 TextFieldGroup.defaultTypes = {
