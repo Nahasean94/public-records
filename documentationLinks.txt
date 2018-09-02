@@ -1,0 +1,37 @@
+documentation references
+https://en.wikipedia.org/wiki/Corruption-Forms of corruption
+https://web3js.readthedocs.io/en/1.0/-Web3 js documentation
+https://solidity.readthedocs.io/-Solidity documentation
+
+Matering Blockchain-authors and pages
+https://www.forbes.com/sites/bernardmarr/2018/02/16/a-very-brief-history-of-blockchain-technology-everyone-should-read/#576250c57bc4- History of the blockchain
+
+https://blog.icoalert.com/7-challenges-that-need-to-be-addressed-before-blockchain-mass-adoption-is-possible-58007ba64a04- Challenges of the blockchain
+
+
+
+
+
+Bibliography
+[1]-link to daily nation article
+[2] Nakamoto's white paper- https://bitcoin.org/bitcoin.pdf
+[3] http://fortune.com/2016/09/28/blockchain-banks-2017/-
+[4] http://fortune.com/40-under-40/vitalik-butterin-22/
+[5] https://medium.com/the-mission/a-brief-history-of-blockchain-an-investors-perspective-e9b6605aad68
+[6] https://blockgeeks.com/guides/proof-of-work-vs-proof-of-stake/
+[7] https://en.wikipedia.org/wiki/Turing_completeness
+[8] https://en.wikipedia.org/wiki/Gossip_protocol
+[9] https://www.infosys.com/insights/purposeful-ai/Documents/machina-economicus.pdf
+[10] https://en.wikipedia.org/wiki/Ripple_(payment_protocol)
+[11] https://en.wikipedia.org/wiki/Sybil_attack
+[12] https://peercoin.net/
+[13] https://bitshares.org/
+[14] https://nem.io/
+[15] https://arxiv.org/pdf/1802.06993v2.pdf
+[16] http://www.comp.nus.edu.sg/~loiluu/papers/oyente.pdf
+[17] https://www.greentechmedia.com/articles/read/can-we-prevent-a-global-energy-crisis-from-bitcoin-mining#gs.3ELGFhg
+[18] https://grist.org/article/bitcoin-could-cost-us-our-clean-energy-future/
+[19] https://ecitizen.go.ke
+[20] https://www.knec.ac.ke/home/index.php
+[21] https://www.knec.ac.ke/home/index.php
+[22] http://www.ntsa.go.ke
