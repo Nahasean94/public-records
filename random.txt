@@ -1,33 +1,4 @@
 
-C:\Users\nahas\Google Drive\Code\fourth-year-project\front-end\src>ganache-cli
-Ganache CLI v6.1.0 (ganache-core: 2.1.0)
-
-Available Accounts
-==================
-(0) 0xbd936b259f7978da6be5a34bcb8b8c8df0b69dc7
-(1) 0x6a9553f8d87a048a93cfbc0df1cb03db750b32a3
-(2) 0x05c1e9a17254b18b6b59e9fb1d233a9e931ddc0a
-(3) 0xb7aecc6bae233181f9de4c9a76886ca83298afb4
-(4) 0x2e4656b613cd0764a7c5fd3fdba5735d325e7157
-(5) 0x6f0e7dcf4e98cae9a4caf55e4bb873736553213c
-(6) 0xf77c29ee534a591d36b4096deca48ca9d6c72079
-(7) 0x5274519a1a0ff7f28bddc3fa5315ea9dc48a2cf3
-(8) 0x5e7c3faa3347a2f1309b3830d0478ae55f686577
-(9) 0x1475807e8557f23171d8086b411bc1553ed17881
-
-Private Keys
-==================
-(0) f13bcc1a16212a80f946e9819724d1be8bd70f35e3076eb896a8d8bdf8337c7b
-(1) 641e3d12f2bf4fcc757bef1931042dc6b236249292078d8f5466b01886879677
-(2) f6eeefc85bb7ae621be388c5cf04d42483093e5ea50620600143ad5864225850
-(3) 9d5ef980e656b81217ea2cfb987ca518694a8a9eb1fedc1c99fe2c7d731e55d9
-(4) dbd1057fcf11aab87a4545576fa3a303895a70b0fcee633b0c9c58ad1f191cc9
-(5) 0cf6022fb1c32868cffbbfea0a6c4a9fae89ec48ee617020128874f9176aa132
-(6) c659312a55098c81e155ebf85210ed342a6317ffa5f0edfc2a00d9111dc5c6a3
-(7) 2083527cc8b8bbaf1bdcea4b2126ed89e10047fe378cf3be8952537fcb03473a
-(8) b84a3cae2bad9aac1ceac024b6f121d86025f6925a245769d53e3f12e767fae7
-(9) f49266fef9e1259bb31fceeb3efd11607fdf9f110e3cf6e08c17a0ea14b3c365
-
 HD Wallet
 ==================
-Mnemonic:      note length good lend patch bleak weird gloom tomato above spoil favorite
+Mnemonic:      deputy myself feel voice rail apart wall increase exist intact trim drive

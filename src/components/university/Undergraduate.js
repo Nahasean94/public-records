@@ -7,6 +7,7 @@ import getWeb3 from "../../utils/getWeb3"
 import Menu from "./Menu"
 import PropTypes from "prop-types"
 import Logbooks from "../ntsa/Logbooks"
+import validator from "validator"
 
 const contract = require('truffle-contract')
 
@@ -52,7 +53,32 @@ let scoreOptions = [{
         value: "Pass"
     },
 ]
-
+let upiOptions = [{
+    label: "ABC",
+    value: "ABC"
+}, {
+    label: "BDD",
+    value: "BDD"
+}, {
+    label: "JKI",
+    value: "JKI"
+}, {
+    label: "ZXY",
+    value: "ZXY"
+}, {
+    label: "WFY",
+    value: "WFY"
+}]
+let yearOptions = () => {
+    let marks = []
+    for (let i = 1987; i <= 2017; i++) {
+        marks.push({
+            label: i,
+            value: i
+        })
+    }
+    return marks
+}
 class Undergraduate extends React.Component {
     constructor(props) {
         super(props)
@@ -60,7 +86,7 @@ class Undergraduate extends React.Component {
             course: '',
             upi: '',
             score: '',
-            date: '',
+            year: '',
             institution: 'MOI',
             web3: null,
         }
@@ -69,6 +95,8 @@ class Undergraduate extends React.Component {
         this.onChangeCourseOptions = this.onChangeCourseOptions.bind(this)
         this.onChangeScoreOptions = this.onChangeScoreOptions.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+        this.onChangeYear = this.onChangeYear.bind(this)
+        this.onChangeUpi=this.onChangeUpi.bind(this)
     }
 
 
@@ -84,24 +112,66 @@ class Undergraduate extends React.Component {
                 console.log('Error finding web3.')
             })
     }
+    onChangeYear(year) {
+        this.setState({year})
+    }
+    validateInfo(data) {
+        let errors = {}
 
+        if (!data.upi.value) {
+            errors.upi = 'This field is required'
+        }
+        if (!data.course.value) {
+            errors.course = 'This field is required'
+        }
+        if (!data.score.value) {
+            errors.score = 'This field is required'
+        }
+        if (!data.year.value) {
+            errors.year = 'This field is required'
+        }
+
+
+
+
+        return {
+            errors,
+            isValid: isEmpty(errors)
+        }
+    }
+
+
+    isInfoValid() {
+        const {errors, isValid} = this.validateInfo(this.state)
+        if (!isValid) {
+            this.setState({errors})
+        }
+        return isValid
+    }
     onSubmit(e) {
         e.preventDefault()
-        const publicRecords = contract(PublicRecords)
-        publicRecords.setProvider(this.state.web3.currentProvider)
+        if (this.isInfoValid()) {
+            const publicRecords = contract(PublicRecords)
+            publicRecords.setProvider(this.state.web3.currentProvider)
 
-        // Declaring this for later so we can chain functions on SimpleStorage.
-        let publicRecordsInstance
-        // Get accounts.
-        this.state.web3.eth.getCoinbase((error, coinbase) => {
+            // Declaring this for later so we can chain functions on SimpleStorage.
+            let publicRecordsInstance
+            // Get accounts.
+            this.state.web3.eth.getCoinbase((error, coinbase) => {
 
-            publicRecords.deployed().then((instance) => {
-                publicRecordsInstance = instance
-                return publicRecordsInstance.addUndergraduateRecord(this.state.upi, this.state.course, this.state.score, this.state.date, this.state.institution, {from: coinbase})
-            }).then((result) => {
-                console.log(result)
+                publicRecords.deployed().then((instance) => {
+                    publicRecordsInstance = instance
+                    console.log(this.state.upi.value)
+                    console.log(this.state.course.value)
+                    console.log(this.state.score.value)
+                    console.log(this.state.year.value)
+                    console.log(this.state.institution)
+                    return publicRecordsInstance.addUndergraduateRecord(this.state.upi.value, this.state.course.value, this.state.score.value, this.state.year.value, this.state.institution, {from: coinbase})
+                }).then((result) => {
+                    console.log(result)
+                })
             })
-        })
+        }
     }
 
     onChange(e) {
@@ -118,9 +188,12 @@ class Undergraduate extends React.Component {
         this.setState({score})
 
     }
+    onChangeUpi(upi) {
+        this.setState({upi})
+    }
 
     render() {
-        const {loading, message} = this.state
+        const {loading, message,errors} = this.state
         if (loading) {
             return <p>Adding record…</p>
         }
@@ -135,20 +208,34 @@ class Undergraduate extends React.Component {
                     </div>
                     <div className="col-sm-6 offset-sm-1">
                         <form onSubmit={this.onSubmit}>
-                            <TextFieldGroup
-                                label="Student UPI"
-                                type="text"
-                                name="upi"
-                                value={this.state.upi}
-                                onChange={this.onChange}
-                            />
-                            <TextFieldGroup
-                                label="Year"
-                                type="date"
-                                name="date"
-                                value={this.state.date}
-                                onChange={this.onChange}
-                            />
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Student UPI</label>
+                                <div className="col-sm-9 ">
+                                    <Select
+                                        closeOnSelect={true}
+                                        onChange={this.onChangeUpi}
+                                        options={upiOptions}
+                                        placeholder="Search Upi"
+                                        removeSelected={true}
+                                        value={this.state.upi}
+                                    />
+                                    {errors && errors.upi && <div className="alert alert-danger">{errors.upi}</div>}
+                                </div>
+                            </div>
+                            <div className="form-group row">
+                                <label className="col-sm-3 col-form-label">Year</label>
+                                <div className="col-sm-9 ">
+                                    <Select
+                                        closeOnSelect={true}
+                                        onChange={this.onChangeYear}
+                                        options={yearOptions()}
+                                        placeholder="Search Year"
+                                        removeSelected={true}
+                                        value={this.state.year}
+                                    />
+                                    {errors && errors.year && <div className="alert alert-danger">{errors.year}</div>}
+                                </div>
+                            </div>
                             <div className="form-group row">
                                 <label className="col-sm-3 col-form-label">Course</label>
                                 <div className="col-sm-9 ">
@@ -160,6 +247,7 @@ class Undergraduate extends React.Component {
                                         removeSelected={true}
                                         value={this.state.course}
                                     />
+                                    {errors && errors.course && <div className="alert alert-danger">{errors.course}</div>}
                                 </div>
                             </div>
 
@@ -174,6 +262,7 @@ class Undergraduate extends React.Component {
                                         removeSelected={true}
                                         value={this.state.score}
                                     />
+                                    {errors && errors.score && <div className="alert alert-danger">{errors.score}</div>}
                                 </div>
                             </div>
                             <div className="form-group row">

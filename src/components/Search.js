@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import PublicRecords from '../blockchain/build/contracts/PublicRecords.json'
 import getWeb3 from '../utils/getWeb3'
 import promisesAll from 'promise-all'
+import DrivingLicense from "./search_results/DrivingLicense"
+import LogBook from "./search_results/LogBook"
 
 const contract = require('truffle-contract')
 
@@ -11,6 +13,8 @@ class Search extends Component {
         this.state = {
             search: '',
             searchType: '',
+            dlResults: '',
+            logBookResults:'',
             web3: null,
             institutionResult: [],
             studentResult: [],
@@ -89,12 +93,54 @@ class Search extends Component {
         })
     }
 
-    searchId(upi) {
+    searchId(id) {
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
 
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            let results = []
+            publicRecords.deployed().then(async (instance) => {
+                publicRecordsInstance = instance
+                return await promisesAll(
+                    await publicRecordsInstance.getDrivingLicense(id, {from: coinbase}).then(result => results = [...result]),
+                    await publicRecordsInstance.getDrivingLicenseOwner(id, {from: coinbase}).then(result => results = [...results, ...result]),
+                )
+            }).then(() => {
+                console.log(results)
+                this.setState({dlResults: results})
+            })
+
+        })
     }
 
-    searchCar(upi) {
+    searchCar(logBookResults) {
+        console.log(logBookResults)
+        const publicRecords = contract(PublicRecords)
+        publicRecords.setProvider(this.state.web3.currentProvider)
 
+        // Declaring this for later so we can chain functions on SimpleStorage.
+        let publicRecordsInstance
+
+        // Get accounts.
+        this.state.web3.eth.getCoinbase((error, coinbase) => {
+
+            let results = []
+            publicRecords.deployed().then(async (instance) => {
+                publicRecordsInstance = instance
+                return await promisesAll(
+                    await publicRecordsInstance.getLogbook(logBookResults, {from: coinbase}).then(result => results = [...result]),
+                )
+            }).then(() => {
+                console.log(results)
+                this.setState({logBookResults: results})
+            })
+
+        })
     }
 
     searchLand(upi) {
@@ -136,34 +182,33 @@ class Search extends Component {
 
                     </div>
                     <fieldset className="form-group ">
-                        <div className="form-check">
-                            <input className="form-check-input" type="radio"
-                                   value="student" name="searchType" onChange={this.onChange} id="searchStudent"/>
-                            <label className="form-check-label" htmlFor="searchStudent">Student</label>
-                        </div>
-                        <div className="form-check">
-                            <input className="form-check-input" type="radio"
-                                   value="institution" name="searchType" onChange={this.onChange}
-                                   id="searchInstitution"/>
-                            <label className="form-check-label" htmlFor="searchInstitution">Institution</label>
-                        </div>
+                        {/*<div className="form-check">*/}
+                        {/*<input className="form-check-input" type="radio"*/}
+                        {/*value="student" name="searchType" onChange={this.onChange} id="searchStudent"/>*/}
+                        {/*<label className="form-check-label" htmlFor="searchStudent">Student</label>*/}
+                        {/*</div>*/}
+                        {/*<div className="form-check">*/}
+                        {/*<input className="form-check-input" type="radio"*/}
+                        {/*value="institution" name="searchType" onChange={this.onChange}*/}
+                        {/*id="searchInstitution"/>*/}
+                        {/*<label className="form-check-label" htmlFor="searchInstitution">Institution</label>*/}
+                        {/*</div>*/}
                         <div className="form-check">
                             <input className="form-check-input" type="radio"
                                    value="id" name="searchType" onChange={this.onChange}
                                    id="searchId"/>
-                            <label className="form-check-label" htmlFor="searchId">National ID (will display non
-                                academic records)</label>
+                            <label className="form-check-label" htmlFor="searchId">National ID (Driving License)</label>
                         </div>
                         <div className="form-check">
                             <input className="form-check-input" type="radio"
-                                   value="id" name="searchType" onChange={this.onChange}
+                                   value="car" name="searchType" onChange={this.onChange}
                                    id="searchCar"/>
                             <label className="form-check-label" htmlFor="searchCar">Car number plate (will display log
                                 book of the car)</label>
                         </div>
                         <div className="form-check">
                             <input className="form-check-input" type="radio"
-                                   value="id" name="searchType" onChange={this.onChange}
+                                   value="land" name="searchType" onChange={this.onChange}
                                    id="searchLand"/>
                             <label className="form-check-label" htmlFor="searchLand">Plot number (will display title
                                 deed of the plot/land)</label>
@@ -182,7 +227,7 @@ class Search extends Component {
                     {/*{studentResult && studentResult.length>0 && <div className="col-sm-4 card"> <ECDEResults  result={studentResult} web3Instance={web3}/> </div>}*/}
 
 
-                    {/*{studentResult && studentResult.length>0&&  <div className="col-sm-4 card">*/}
+                    {/*{studentResult && studentResult.length > 0 && <div className="col-sm-4 card">*/}
                     {/*<PrimarySchoolResults result={studentResult} web3Instance={web3}/>*/}
                     {/*</div>}*/}
                     {/*{studentResult && studentResult.length > 0 && <div className="col-sm-4 card">*/}
@@ -194,6 +239,12 @@ class Search extends Component {
                     {/*<div className="col-sm-4 card">*/}
                     {/*<UndergraduateResults/>*/}
                     {/*</div>*/}
+                    {this.state.dlResults && this.state.dlResults.length > 0 && <div className="card">
+                        <DrivingLicense result={this.state.dlResults} web3Instance={web3}/>
+                    </div>}
+                    {this.state.logBookResults && this.state.logBookResults.length > 0 && <div className="card">
+                        <LogBook result={this.state.logBookResults} web3Instance={web3}/>
+                    </div>}
                 </div>
             </div>
         )
@@ -201,3 +252,5 @@ class Search extends Component {
 }
 
 export default Search
+
+///
