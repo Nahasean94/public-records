@@ -8,6 +8,8 @@ https://www.forbes.com/sites/bernardmarr/2018/02/16/a-very-brief-history-of-bloc
 
 https://blog.icoalert.com/7-challenges-that-need-to-be-addressed-before-blockchain-mass-adoption-is-possible-58007ba64a04- Challenges of the blockchain
 
+https://ethereumbuilders.gitbooks.io/guide/content/en/solidity_features.html- Solidity features
+
 
 
 
@@ -35,3 +37,6 @@ Bibliography
 [20] https://www.knec.ac.ke/home/index.php
 [21] https://www.knec.ac.ke/home/index.php
 [22] http://www.ntsa.go.ke
+[23] https://www.ethereum.org/
+[24] https://solidity.readthedocs.io/en/v0.4.24/
+[25] https://ethereumbuilders.gitbooks.io/guide/content/en/solidity_features.html
